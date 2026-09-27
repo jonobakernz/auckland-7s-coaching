@@ -93,7 +93,7 @@ export default {
     // Serve the how-to guide on the help subdomain, whatever path is requested.
     if (url.hostname === 'help.coach7srefs.nz') {
       const assetUrl = new URL(request.url);
-      assetUrl.pathname = '/help.html';
+      assetUrl.pathname = '/help';
       return env.ASSETS.fetch(new Request(assetUrl, request));
     }
 
