@@ -65,9 +65,11 @@ Two earlier addresses are retired. Do not use or link either of them:
 
 - `https://jonobakernz.github.io/sevens-coaching-form/` -- GitHub Pages. Now returns 404: Pages does not work on a
   private repository on the Free plan, and the repo is private again (see below).
-- `https://easy-goingcrow.staticdomains.app/` -- static.app, the original host. Still online, but static.app sends
-  a security header that silently blocks results and feedback from reaching SnapItForms. Left running only because
-  removing it is a separate, deliberate decision -- see the release notes.
+- `https://easy-goingcrow.staticdomains.app/` -- static.app, the original host. The GitHub Actions workflow that
+  used to deploy there has been removed, so this address is now frozen at whatever it last had (release 21's code,
+  from before the CSP problem was even diagnosed) and will never update again. static.app itself also sends a
+  security header that silently blocks results and feedback from reaching SnapItForms, so it never worked properly
+  regardless.
 
 Phones cache the app for offline use, so a release does not reach everyone straight away. `sw.js` refreshes its
 cached files in the background each time the app opens; once a phone has the new files, it picks them up after
