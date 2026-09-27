@@ -56,28 +56,36 @@ Open http://localhost:8000. Service workers and the camera work on `localhost`. 
 
 ## Deploy
 
-The site is hosted on GitHub Pages: <https://jonobakernz.github.io/sevens-coaching-form/>.
+The site is hosted on **Cloudflare** (a Worker with static assets): <https://coach7srefs.nz>. Cloudflare's own
+GitHub integration deploys automatically a short time after every push to `main` -- no workflow or secret is
+needed in this repo for it. Merging a pull request to `main` is what puts a change live, so treat every merge as
+a release.
 
-Pages redeploys automatically a short time after every push to `main` -- no workflow or secret is needed for it.
-Merging a pull request to `main` is what puts a change live, so treat every merge as a release.
+Two earlier addresses are retired. Do not use or link either of them:
+
+- `https://jonobakernz.github.io/sevens-coaching-form/` -- GitHub Pages. Now returns 404: Pages does not work on a
+  private repository on the Free plan, and the repo is private again (see below).
+- `https://easy-goingcrow.staticdomains.app/` -- static.app, the original host. Still online, but static.app sends
+  a security header that silently blocks results and feedback from reaching SnapItForms. Left running only because
+  removing it is a separate, deliberate decision -- see the release notes.
 
 Phones cache the app for offline use, so a release does not reach everyone straight away. `sw.js` refreshes its
 cached files in the background each time the app opens; once a phone has the new files, it picks them up after
 two opens. Bump `CACHE` in `sw.js` by hand if you ever need every phone to drop its old cache in one go -- nothing
-does this automatically for a GitHub Pages deploy.
+does this automatically.
 
-## Keeping the repo public safe
+## Repo privacy
 
-GitHub Pages does not support private repositories on the Free plan, so this repo is public. Nothing sensitive
-lives in it:
+**This repo is private.** It was made public for a period (releases 22 to 24) purely because GitHub Pages does not
+support private repositories on the Free plan; moving to Cloudflare removed that restriction, so it went back to
+private. If it is ever made public again for any reason, the same care applies as before:
 
-- No real coaching data, referee names, or coach names live in this repo. Real results and feedback live in
-  SnapItForms. The repo only ever holds fictional demo data (see `demo/`).
-- `SNAPIT_ACCESS_KEY` in `index.html` sits in plain sight, same as it is already visible to anyone who views the
-  live page's source. It is not a security secret -- anyone who has it can send junk into the SnapItForms
-  dashboard, so do not advertise it beyond what is needed to run the app.
-- Before adding anything else to this repo, read `CLAUDE.md`'s rule about never putting real names in it -- that
-  matters more once it is in the public history.
+- No real coaching data, referee names, or coach names should ever go into this repo. Real results and feedback
+  live in SnapItForms. The repo should only ever hold fictional demo data (see `demo/`).
+- `SNAPIT_ACCESS_KEY` in `index.html` sits in plain sight regardless of repo visibility, since it is already visible
+  to anyone who views the live page's source. It is not a security secret -- anyone who has it can send junk into
+  the SnapItForms dashboard, so do not advertise it beyond what is needed to run the app.
+- `CLAUDE.md`'s rule about never putting real names in the repo applies at all times, not just while it is public.
 
 ## Results, feedback and SnapItForms
 
@@ -138,8 +146,8 @@ tested. Add your own tests if you grow the app.
 
 ## Licence
 
-**No licence is set for the app code, and the repo is public.** With no licence file, default copyright applies:
-the code is visible to anyone, but nobody else has legal permission to copy, modify or reuse it. If that is not
-what you want -- for example if you would rather explicitly allow or explicitly forbid reuse -- add a `LICENSE`
-file stating your choice. Third-party code and fonts keep their own licences (see `lib/LICENSES.txt` and
-`fonts/LICENSE.txt`).
+No licence is set for the app code. The repo is private now, so this is less urgent than it was during the period
+it was public -- but it is still worth a deliberate choice if this is ever shared or made public again. With no
+licence file, default copyright applies: nobody else has legal permission to copy, modify or reuse the code. Add a
+`LICENSE` file if you want to state something different. Third-party code and fonts keep their own licences (see
+`lib/LICENSES.txt` and `fonts/LICENSE.txt`).
