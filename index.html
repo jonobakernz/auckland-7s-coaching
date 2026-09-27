@@ -367,6 +367,35 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
     <details class="more" id="more">
       <summary><span class="ttl">Match details</span><span class="sum" id="more-sum"></span></summary>
       <div class="meta">
+        <label class="f wide"><span>Union</span>
+          <select data-f="union">
+            <option value=""></option>
+            <option>Auckland RFU</option>
+            <option>Bay of Plenty RFU</option>
+            <option>Buller RFU</option>
+            <option>Canterbury RFU</option>
+            <option>Counties Manukau RFU</option>
+            <option>East Coast RFU</option>
+            <option>Hawke's Bay RU</option>
+            <option>Horowhenua-Kapiti RFU</option>
+            <option>King Country RFU</option>
+            <option>Manawatu RU</option>
+            <option>Mid Canterbury RFU</option>
+            <option>North Harbour RFU</option>
+            <option>Northland RFU</option>
+            <option>Otago RFU</option>
+            <option>Poverty Bay RFU</option>
+            <option>South Canterbury RFU</option>
+            <option>Southland RFU</option>
+            <option>Taranaki TRFU</option>
+            <option>Tasman RU</option>
+            <option>Thames Valley RFU</option>
+            <option>Waikato RU</option>
+            <option>Wairarapa-Bush RFU</option>
+            <option>Wanganui RFU</option>
+            <option>Wellington RFU</option>
+          </select>
+        </label>
         <label class="f wide"><span>Tournament <i lang="mi">Whakataetae</i></span>
           <input type="text" data-f="tournament" autocomplete="off" autocapitalize="words">
         </label>
@@ -732,14 +761,14 @@ function blank(opts = {}) {
   try { tournament = JSON.parse(localStorage.getItem(LS_TOUR)) || ''; } catch {}
   if (!tournament && cfg.t) tournament = cfg.t;
   return {
-    id: uid(), coach, tournament, level: carry.level || '', game: opts.sameGame ? (carry.game || '') : nextGame(carry.game),
+    id: uid(), coach, tournament, union: carry.union || '', level: carry.level || '', game: opts.sameGame ? (carry.game || '') : nextGame(carry.game),
     role: carry.role || 'Referee', referee: '', field: '', time: '', date: today(),
     scores: {}, comments: {}, voice: {}, tooClose: false, inWay: false, goodPos: false, keep: '', work: '', priv: '',
     created: Date.now(), updated: Date.now(), uploadedAt: 0, uploadedVersion: 0
   };
 }
 function normalise(f) {
-  f.tournament ??= ''; f.game ??= ''; f.level ??= ''; f.role ||= 'Referee';
+  f.tournament ??= ''; f.union ??= ''; f.game ??= ''; f.level ??= ''; f.role ||= 'Referee';
   f.goodPos ??= false; f.keep ??= ''; f.work ??= ''; f.priv ??= '';
   f.uploadedAt ??= 0; f.uploadedVersion ??= 0; f.scores ??= {}; f.comments ??= {}; f.voice ??= {};
   return f;
@@ -812,7 +841,7 @@ function refreshFlags() {
   $$('[data-flag]').forEach(b => b.setAttribute('aria-pressed', String(!!cur[b.dataset.flag])));
 }
 function moreSummary() {
-  const bits = [cur.tournament.trim(), cur.level.trim(), cur.game.trim(), fmtDate(cur.date, false)].filter(Boolean);
+  const bits = [cur.union.trim(), cur.tournament.trim(), cur.level.trim(), cur.game.trim(), fmtDate(cur.date, false)].filter(Boolean);
   $('#more-sum').textContent = bits.join(', ');
 }
 function fillForm() {
@@ -895,7 +924,7 @@ $('#view-form').addEventListener('input', (e) => {
     cur[t.dataset.f] = t.value;
     if (t.dataset.f === 'coach') write(LS_COACH, t.value);
     if (t.dataset.f === 'tournament') write(LS_TOUR, t.value);
-    if (['level', 'game', 'role'].includes(t.dataset.f)) write(LS_CARRY, { ...read(LS_CARRY, {}), [t.dataset.f]: t.value });
+    if (['union', 'level', 'game', 'role'].includes(t.dataset.f)) write(LS_CARRY, { ...read(LS_CARRY, {}), [t.dataset.f]: t.value });
     if (t.dataset.f === 'referee') $('#ref-hint').hidden = true;
     if (t.tagName === 'TEXTAREA') autosize(t);
     moreSummary();
@@ -1074,7 +1103,7 @@ function summary(f) {
   L.push('Referee: ' + (f.referee || '-') + (f.role && f.role !== 'Referee' ? ` (${f.role})` : ''));
   L.push(`Field: ${f.field || '-'}   Time: ${fmtTime(f.time) || '-'}   Date: ${fmtDate(f.date) || '-'}`);
   if (f.coach) L.push('Coach: ' + f.coach);
-  if (f.tournament || f.level || f.game) L.push(`Tournament: ${f.tournament || '-'}   Level: ${f.level || '-'}   Game: ${f.game || '-'}`);
+  if (f.union || f.tournament || f.level || f.game) L.push(`Union: ${f.union || '-'}   Tournament: ${f.tournament || '-'}   Level: ${f.level || '-'}   Game: ${f.game || '-'}`);
   L.push('');
   for (const s of SECTIONS) {
     L.push(`${s.title}${s.sub ? ' (' + s.sub + ')' : ''}: ${f.scores[s.key] || '-'}/5`);
@@ -1098,7 +1127,7 @@ function summary(f) {
 }
 const csvCell = (v) => { v = String(v ?? ''); return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
 function toCSV(list) {
-  const head = ['Date', 'Time', 'Tournament', 'Level', 'Game', 'Field', 'Referee', 'Role', 'Coach'];
+  const head = ['Date', 'Time', 'Union', 'Tournament', 'Level', 'Game', 'Field', 'Referee', 'Role', 'Coach'];
   for (const s of SECTIONS) {
     head.push(s.title + ' score', s.title + ' comments');
     if (s.contest) head.push('Too close', 'In the way', 'Good position', 'Distance from contest comments');
@@ -1106,7 +1135,7 @@ function toCSV(list) {
   head.push('Strength to keep', 'One thing to work on', 'Private notes');
   const rows = [head];
   for (const f of list) {
-    const r = [f.date, f.time, f.tournament, f.level, f.game, f.field, f.referee, f.role, f.coach];
+    const r = [f.date, f.time, f.union, f.tournament, f.level, f.game, f.field, f.referee, f.role, f.coach];
     for (const s of SECTIONS) {
       r.push(f.scores[s.key] || '', f.comments[s.key] || '');
       if (s.contest) r.push(f.tooClose ? 'Yes' : '', f.inWay ? 'Yes' : '', f.goodPos ? 'Yes' : '', f.comments.contest || '');
@@ -1165,7 +1194,7 @@ function sanitize(r) {
   }
   return {
     ...b, id: String(r.id), coach: str(r.coach), referee: str(r.referee), field: str(r.field),
-    tournament: str(r.tournament), level: str(r.level), game: str(r.game), role: str(r.role) || 'Referee',
+    union: str(r.union), tournament: str(r.tournament), level: str(r.level), game: str(r.game), role: str(r.role) || 'Referee',
     uploadedAt: Number(r.uploadedAt) || 0, uploadedVersion: Number(r.uploadedVersion) || 0,
     time: str(r.time), date: str(r.date), scores, comments,
     voice: {}, tooClose: !!r.tooClose, inWay: !!r.inWay, goodPos: !!r.goodPos, keep: str(r.keep), work: str(r.work), priv: str(r.priv),
@@ -1372,13 +1401,13 @@ const GITHUB_ISSUE_URL = 'https://github.com/jonobakernz/sevens-coaching-form/is
 // A coach without a GitHub account can send the same note by email instead.
 const SUPPORT_EMAIL = 'Support@simplesolutions.co.nz';
 
-const UP_FIELDS = ['form_id', 'version', 'code', 'tournament', 'level', 'game', 'date', 'time', 'field', 'referee', 'role', 'coach',
+const UP_FIELDS = ['form_id', 'version', 'code', 'union', 'tournament', 'level', 'game', 'date', 'time', 'field', 'referee', 'role', 'coach',
   ...SECTIONS.flatMap(s => ['score_' + s.key, 'comment_' + s.key]),
   'too_close', 'in_the_way', 'good_position', 'contest_comments', 'keep', 'work', 'private_notes'];
 
 function payload(f) {
   const p = {
-    form_id: f.id, version: String(f.updated), code: cfg.c || '', tournament: (f.tournament || '').trim(), level: (f.level || '').trim(),
+    form_id: f.id, version: String(f.updated), code: cfg.c || '', union: (f.union || '').trim(), tournament: (f.tournament || '').trim(), level: (f.level || '').trim(),
     game: (f.game || '').trim(), date: f.date, time: f.time, field: f.field, referee: f.referee.trim(), role: f.role || 'Referee', coach: f.coach.trim()
   };
   for (const s of SECTIONS) {
@@ -1819,7 +1848,7 @@ function fromFlat(r) {
   const yes = (v) => /^(yes|true|1|y)$/i.test(String(v ?? '').trim());
   const ver = Number(g('version')) || Date.parse(g('created_at')) || Date.now();
   const rec = {
-    coach: g('coach'), tournament: g('tournament'), level: g('level'), game: g('game'), referee, role: g('role') || 'Referee', field: g('field'),
+    coach: g('coach'), union: g('union'), tournament: g('tournament'), level: g('level'), game: g('game'), referee, role: g('role') || 'Referee', field: g('field'),
     time: g('time'), date: g('date'), scores, comments, tooClose: yes(r.too_close), inWay: yes(r.in_the_way), goodPos: yes(r.good_position),
     keep: g('keep'), work: g('work'), priv: g('private_notes')
   };

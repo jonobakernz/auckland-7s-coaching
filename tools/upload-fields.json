@@ -1,9 +1,10 @@
 {
-  "note": "The upload fields. If this list changes, static.app starts a new results table. Change it only on purpose.",
+  "note": "The upload fields. Whichever backend receives them, an export or a saved CSV expects these exact names. Change it only on purpose.",
   "fields": [
     "form_id",
     "version",
     "code",
+    "union",
     "tournament",
     "level",
     "game",
