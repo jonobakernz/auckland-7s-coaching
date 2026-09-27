@@ -1,11 +1,13 @@
 # Sevens Coaching Form: release notes
 
-Updated 27 Sept 2026. Current release: 25.
+Updated 27 Sept 2026. Current release: 26.
 
 ## At a glance
 
-Release 25 is live at <https://coach7srefs.nz>. It is a phone app. Coaches use it to score referees. Organisers
-use it to rank them.
+Release 26 is live at <https://coach7srefs.nz>. It is a phone app. Coaches use it to score referees. Organisers
+use it to rank them. This release removes the last piece of static.app: the GitHub Actions workflow that used to
+deploy there is gone, along with its `STATICAPP_API_KEY` secret and `STATICAPP_PID` variable. Nothing about the
+app itself changed -- see release 25 for the actual hosting move to Cloudflare.
 
 **The site moved from GitHub Pages to Cloudflare, at a new custom domain, and the repo is private again.**
 GitHub Pages had forced this repo to be public, since Pages does not support private repos on the Free plan.
@@ -114,10 +116,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 25 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 26 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 27 Sept 2026 | 26. Removed the static.app deploy workflow | The GitHub Actions workflow that deployed to static.app is deleted, along with the `STATICAPP_API_KEY` secret and `STATICAPP_PID` variable. That address (easy-goingcrow.staticdomains.app) is now permanently frozen at release 21's code and will never update again. Nothing about the app changed. | No visible change. Documentation and repository housekeeping only. |
 | 27 Sept 2026 | 25. Moved to Cloudflare, repo private again | Hosting moved from GitHub Pages to Cloudflare (a Worker with static assets), at a new custom domain, coach7srefs.nz. The repo went back to private, since Cloudflare does not force it public the way GitHub Pages did. GitHub Pages is now offline. No app code changed. | The address in the browser is coach7srefs.nz, not a staticdomains.app or github.io address. |
 | 25 Sept 2026 | 24. An email fallback for bugs and ideas | "Bugs and ideas" in Setup now has a second button, "Email instead", beside "Open on GitHub". It sends the same note to Support@simplesolutions.co.nz, for a coach without a GitHub account. | An "Email instead" button beside "Open on GitHub" in Setup. |
 | 25 Sept 2026 | 23. Bugs and ideas go to GitHub | A new "Bugs and ideas" box in Setup opens a prefilled GitHub issue. It is separate from "Feedback for the organiser" (renamed from plain "Feedback") just above it: bug reports and feature ideas are public on the app's repo, not the organiser's private SnapItForms account, so real names should stay out of them. | A "Bugs and ideas" section in Setup, below a renamed "Feedback for the organiser" box. |
@@ -260,7 +263,7 @@ The app has not been tested on real phones yet. Everything below is either a des
 | --- | --- |
 | Live address (from release 25) | https://coach7srefs.nz. This is the one to give coaches. |
 | Old address, retired (GitHub Pages) | https://jonobakernz.github.io/sevens-coaching-form/. Now returns 404 -- Pages does not work on a private repo on the Free plan, and the repo went private again in release 25. |
-| Old address, retired (static.app) | https://easy-goingcrow.staticdomains.app/. Still online, but its own security header blocks uploads and feedback. Point any coach still using either old address to the live one above. |
+| Old address, retired (static.app) | https://easy-goingcrow.staticdomains.app/. The deploy workflow is gone, so this is now frozen at release 21's code forever and will never update. Its own security header also blocked uploads and feedback, so it never worked properly regardless. Point any coach still using either old address to the live one above. |
 | A typo domain exists, not yet redirected | coach7refs.nz (missing the second "s") was registered to catch mistyped visits, but the redirect to the correct domain has not been set up yet. Currently just an unused, separately-registered domain. |
 | The repo is private | Reversed from releases 22 to 24, when it had to be public for GitHub Pages. Cloudflare has no such restriction. No coaching data has ever lived in the repo -- only in SnapItForms. See "Repo privacy" in the README. |
 | Coaching results and feedback (from release 22) | Both go to SnapItForms, told apart by the `kind` field (results have none set; feedback has `kind: feedback`). Export from the SnapItForms dashboard as CSV. |
@@ -268,7 +271,7 @@ The app has not been tested on real phones yet. Everything below is either a des
 | Coaching results (releases 3 to 20) | Stored with the site's original hosting provider (static.app). Sign in to that account to retrieve old entries. |
 | SnapItForms track record | None found independently as of Sept 2026 -- no Capterra/G2 listing, no Reddit or Hacker News mention, no GitHub presence. Watch it closely. If it proves unreliable, moving to Formspree, Basin, Getform/Forminit, or an in-house Power Automate/Azure option is a similar-sized change to this one. |
 | Deploy (Cloudflare) | Automatic after every push to `main`, via Cloudflare's own GitHub integration (a Worker with static assets, not classic "Pages" -- the dashboard groups both under "Workers & Pages"). No workflow or secret needed in this repo for it. Usually live within a minute or two. |
-| Deploy (static.app, doubly retired) | The workflow that deploys there (`.github/workflows/deploy-static-app.yml`) still runs on every push, updating an address nobody should use, which itself has never worked properly since release 21 (the CSP issue) regardless of which host serves the app. Worth removing this workflow and its `STATICAPP_API_KEY` secret entirely now -- there is no remaining reason to keep it. |
+| Deploy (static.app, removed in release 26) | The workflow that used to deploy there (`.github/workflows/deploy-static-app.yml`) has been deleted, along with the `STATICAPP_API_KEY` secret and `STATICAPP_PID` variable. Nothing will ever update that address again. |
 | Offline cache | The cache name in `sw.js` (`CACHE`) has stayed at `sevens-form-v11` since release 11. The app still refreshes its files in the background on each open regardless -- see `sw.js`. Bump `CACHE` by hand if you ever need every phone to drop its old cache in one go. |
 | Upload fields | Do not add or rename fields in `UP_FIELDS` (`index.html`) without a plan, whichever backend is in use. `node tools/check.js` catches an accidental change. |
 | Licence | Still not set (see the README). Less urgent now the repo is private again, but still an open decision if it is ever shared or made public. |
@@ -276,9 +279,11 @@ The app has not been tested on real phones yet. Everything below is either a des
 
 **Housekeeping**
 
-- Delete the test entries in the SnapItForms dashboard: several were created verifying release 25 specifically (referee names containing "Cloudflare live test"), on top of any earlier ones.
+- Delete the test entries in the SnapItForms dashboard: several were created verifying releases 25 and 26 specifically (referee names containing "Cloudflare live test" and "Cloudflare live test 2"), on top of any earlier ones.
 - Rotate the SnapItForms access key if it has ever been shared outside the app itself.
-- Set up the `coach7refs.nz` typo redirect (registrar-level domain forwarding is the simplest route, since that domain does not need to be a full Cloudflare zone just to redirect).
-- Remove the static.app deploy workflow and its secret, now that it serves no purpose at all (see the Deploy row above).
-- Decide whether to remove the retired `deploy-static-app.yml` workflow (and its `STATICAPP_API_KEY` secret) now that GitHub Pages is the live site.
-- Decide on a licence for the now-public code, or explicitly decide not to and note that choice somewhere.
+- Decide on a licence for the code, or explicitly decide not to and note that choice somewhere -- less urgent now the repo is private, but still open.
+
+Already done, kept here as a record: the `coach7refs.nz` typo redirect is set up (a Cloudflare Redirect Rule, not
+registrar forwarding, since a DNS-only redirect cannot issue an HTTP redirect by itself -- the typo domain has a
+proxied placeholder DNS record purely so Cloudflare's edge sees the traffic to redirect it); the static.app deploy
+workflow and its secret and variable are removed (release 26).
