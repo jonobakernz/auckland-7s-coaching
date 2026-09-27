@@ -1,18 +1,22 @@
 # Sevens Coaching Form: release notes
 
-Updated 25 Sept 2026. Current release: 24.
+Updated 27 Sept 2026. Current release: 25.
 
 ## At a glance
 
-Release 24 is live at <https://jonobakernz.github.io/sevens-coaching-form/>. It is a phone app. Coaches use it to
-score referees. Organisers use it to rank them.
+Release 25 is live at <https://coach7srefs.nz>. It is a phone app. Coaches use it to score referees. Organisers
+use it to rank them.
 
-The site is hosted on GitHub Pages, and the repo is public -- GitHub Pages does not support private repositories
-on the Free plan. No coaching data lives in the repo itself, only fictional demo data.
+**The site moved from GitHub Pages to Cloudflare, at a new custom domain, and the repo is private again.**
+GitHub Pages had forced this repo to be public, since Pages does not support private repos on the Free plan.
+Cloudflare has no such restriction, so the repo has gone back to private -- reversing that compromise entirely,
+not just relocating it. GitHub Pages itself is now offline (404) as a direct result. No coaching data has ever
+lived in the repo itself, public or private -- only fictional demo data.
 
-Coaching-results uploads and in-app feedback both go to SnapItForms. Both are new to this project, so watch real
-submissions closely -- see the Support reference below before relying on either for a real event. Bugs and feature
-ideas go somewhere else again: a public GitHub issue, separate from the organiser's feedback box.
+Coaching-results uploads and in-app feedback both go to SnapItForms, unaffected by this move. Both are still new
+to this project, so watch real submissions closely -- see the Support reference below before relying on either
+for a real event. Bugs and feature ideas go somewhere else again: a GitHub issue (now private, since the repo is),
+separate from the organiser's feedback box.
 
 A coach scores a game, the phone saves it, and the coach uploads it. The app works without signal. An organiser
 sets up a tournament with one QR code and reviews every referee in one table.
@@ -110,10 +114,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 24 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 25 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 27 Sept 2026 | 25. Moved to Cloudflare, repo private again | Hosting moved from GitHub Pages to Cloudflare (a Worker with static assets), at a new custom domain, coach7srefs.nz. The repo went back to private, since Cloudflare does not force it public the way GitHub Pages did. GitHub Pages is now offline. No app code changed. | The address in the browser is coach7srefs.nz, not a staticdomains.app or github.io address. |
 | 25 Sept 2026 | 24. An email fallback for bugs and ideas | "Bugs and ideas" in Setup now has a second button, "Email instead", beside "Open on GitHub". It sends the same note to Support@simplesolutions.co.nz, for a coach without a GitHub account. | An "Email instead" button beside "Open on GitHub" in Setup. |
 | 25 Sept 2026 | 23. Bugs and ideas go to GitHub | A new "Bugs and ideas" box in Setup opens a prefilled GitHub issue. It is separate from "Feedback for the organiser" (renamed from plain "Feedback") just above it: bug reports and feature ideas are public on the app's repo, not the organiser's private SnapItForms account, so real names should stay out of them. | A "Bugs and ideas" section in Setup, below a renamed "Feedback for the organiser" box. |
 | 25 Sept 2026 | 22. Moved to GitHub Pages, feedback moved to SnapItForms | The site now lives at jonobakernz.github.io/sevens-coaching-form/. The repo is now public, which GitHub Pages requires on the Free plan. Feedback now sends to SnapItForms, the same way results upload does. | The address in the browser is different. Setup and coaching are otherwise unchanged. |
@@ -228,14 +233,14 @@ The app has not been tested on real phones yet. Everything below is either a des
 - Voice notes, dictation and QR scanning were tested in simulated browsers with a fake microphone, a fake camera and a made-up speech service. Real phones may differ, especially an iPhone Home Screen app.
 - SnapItForms' entry limits on a free or trial plan are not confirmed. Run a practice event with about 20 to 30 uploads before a tournament to find out in practice, or ask SnapItForms support directly.
 - SnapItForms has been tested with a real access key, including a real submission checked end to end: a genuine 200 response from `api.snapitforms.com`, with working CORS support.
-- GitHub Pages itself has not been used for a real tournament yet. Confirmed only that it serves the site correctly.
+- Cloudflare itself has not been used for a real tournament yet. Confirmed only that it serves the site correctly, sends no blocking security header, and that a real upload and a real feedback submission both reached SnapItForms successfully -- checked directly, not assumed.
 
 **Design limits**
 
 - The app shows no release number.
 - Coaching-results upload and feedback are both on trial with SnapItForms, a vendor with no independent track record at the time this shipped. Either may need to move again.
-- The repo is public. No coaching data lives in it, but this is a real change from how the project started, worth knowing before adding anything to the repo.
-- No licence is set for the code, public or not.
+- The repo is private again, back to how the project started; no coaching data has ever lived in it either way.
+- No licence is set for the code.
 - The organiser cannot read results live in the app. Export the entries from the SnapItForms dashboard, then use "Load results file".
 - Voice notes are not uploaded, not in backups and not in emails.
 - Dictation needs signal and sends audio to the browser's speech service.
@@ -253,22 +258,27 @@ The app has not been tested on real phones yet. Everything below is either a des
 
 | Item | Detail |
 | --- | --- |
-| Live address | https://jonobakernz.github.io/sevens-coaching-form/. This is the one to give coaches. |
-| Old address, retired | https://easy-goingcrow.staticdomains.app/. Uploads and feedback do not work there. Point any coach still using it to the live address above. |
-| The repo is public | GitHub Pages does not support private repositories on the Free plan. No coaching data lives in the repo -- only in SnapItForms. See "Keeping the repo public safe" in the README. |
+| Live address (from release 25) | https://coach7srefs.nz. This is the one to give coaches. |
+| Old address, retired (GitHub Pages) | https://jonobakernz.github.io/sevens-coaching-form/. Now returns 404 -- Pages does not work on a private repo on the Free plan, and the repo went private again in release 25. |
+| Old address, retired (static.app) | https://easy-goingcrow.staticdomains.app/. Still online, but its own security header blocks uploads and feedback. Point any coach still using either old address to the live one above. |
+| A typo domain exists, not yet redirected | coach7refs.nz (missing the second "s") was registered to catch mistyped visits, but the redirect to the correct domain has not been set up yet. Currently just an unused, separately-registered domain. |
+| The repo is private | Reversed from releases 22 to 24, when it had to be public for GitHub Pages. Cloudflare has no such restriction. No coaching data has ever lived in the repo -- only in SnapItForms. See "Repo privacy" in the README. |
 | Coaching results and feedback (from release 22) | Both go to SnapItForms, told apart by the `kind` field (results have none set; feedback has `kind: feedback`). Export from the SnapItForms dashboard as CSV. |
 | Coaching results (25 Sept 2026, release 21) | Also went to SnapItForms, but a hosting problem fixed in release 22 may have stopped some of these reaching the dashboard. Check with coaches active that day if results are missing. |
-| Coaching results (releases 3 to 20) | Stored with the site's original hosting provider. Sign in to that account to retrieve old entries. |
+| Coaching results (releases 3 to 20) | Stored with the site's original hosting provider (static.app). Sign in to that account to retrieve old entries. |
 | SnapItForms track record | None found independently as of Sept 2026 -- no Capterra/G2 listing, no Reddit or Hacker News mention, no GitHub presence. Watch it closely. If it proves unreliable, moving to Formspree, Basin, Getform/Forminit, or an in-house Power Automate/Azure option is a similar-sized change to this one. |
-| Deploy (GitHub Pages) | Automatic after every push to `main`. No workflow or secret needed. Usually live within a minute or two. |
+| Deploy (Cloudflare) | Automatic after every push to `main`, via Cloudflare's own GitHub integration (a Worker with static assets, not classic "Pages" -- the dashboard groups both under "Workers & Pages"). No workflow or secret needed in this repo for it. Usually live within a minute or two. |
+| Deploy (static.app, doubly retired) | The workflow that deploys there (`.github/workflows/deploy-static-app.yml`) still runs on every push, updating an address nobody should use, which itself has never worked properly since release 21 (the CSP issue) regardless of which host serves the app. Worth removing this workflow and its `STATICAPP_API_KEY` secret entirely now -- there is no remaining reason to keep it. |
 | Offline cache | The cache name in `sw.js` (`CACHE`) has stayed at `sevens-form-v11` since release 11. The app still refreshes its files in the background on each open regardless -- see `sw.js`. Bump `CACHE` by hand if you ever need every phone to drop its old cache in one go. |
 | Upload fields | Do not add or rename fields in `UP_FIELDS` (`index.html`) without a plan, whichever backend is in use. `node tools/check.js` catches an accidental change. |
-| Licence | Still not set (see the README). The repo being public does not mean anyone else has permission to reuse the code -- that is a separate, still-open decision. |
+| Licence | Still not set (see the README). Less urgent now the repo is private again, but still an open decision if it is ever shared or made public. |
 | Wording | Score meanings, quick notes and the referee, coach and level lists are set in the app script and the Setup tab. The README explains where. |
 
 **Housekeeping**
 
-- Delete the test entries in the SnapItForms dashboard: anything with a tournament or message clearly marked as a test.
+- Delete the test entries in the SnapItForms dashboard: several were created verifying release 25 specifically (referee names containing "Cloudflare live test"), on top of any earlier ones.
 - Rotate the SnapItForms access key if it has ever been shared outside the app itself.
+- Set up the `coach7refs.nz` typo redirect (registrar-level domain forwarding is the simplest route, since that domain does not need to be a full Cloudflare zone just to redirect).
+- Remove the static.app deploy workflow and its secret, now that it serves no purpose at all (see the Deploy row above).
 - Decide whether to remove the retired `deploy-static-app.yml` workflow (and its `STATICAPP_API_KEY` secret) now that GitHub Pages is the live site.
 - Decide on a licence for the now-public code, or explicitly decide not to and note that choice somewhere.

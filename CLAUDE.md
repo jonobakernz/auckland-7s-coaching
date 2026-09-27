@@ -6,10 +6,15 @@ A phone app (progressive web app) for rugby referee coaches at sevens tournament
 - No build step and no packages. The whole app is in `index.html` (HTML, CSS and JavaScript). Keep it that way unless asked.
 - `sw.js` is the offline service worker. `manifest.webmanifest` holds install details.
 - `fonts/`, `icons/`, `lib/` (QR code maker and scanner) and `demo/` hold assets. `tools/` holds scripts.
-- **Hosted on GitHub Pages** (`https://jonobakernz.github.io/sevens-coaching-form/`), which is why this repo is
-  public -- GitHub Pages does not support private repos on the Free plan. Pages redeploys automatically after a
-  push to `main`, no workflow needed. An older static.app deploy still exists (`.github/workflows/deploy-static-app.yml`)
-  but must not be treated as the live site -- see the next point for why.
+- **Hosted on Cloudflare** (a Worker with static assets, connected to this GitHub repo), at `https://coach7srefs.nz`.
+  Cloudflare redeploys automatically after a push to `main`, no workflow needed on this side -- Cloudflare's own
+  GitHub integration handles it. Two earlier addresses are retired and must not be used or linked anywhere:
+  `https://jonobakernz.github.io/sevens-coaching-form/` (GitHub Pages -- now 404, since Pages does not work on a
+  private repo on the Free plan and the repo is private again) and `https://easy-goingcrow.staticdomains.app/`
+  (static.app -- still online but its own CSP header blocks results and feedback there; see the next point).
+  **The repo is private again.** It only had to be public for the GitHub Pages era; Cloudflare has no such
+  restriction. Do not assume public-repo conventions (like the old "keep the SnapItForms key unpublicised, but the
+  repo itself doesn't matter" framing) still apply -- treat the repo as private going forward.
 - **Coaching-results uploads and in-app feedback both go to SnapItForms** (`api.snapitforms.com`), not static.app.
   This is why the app had to leave static.app hosting: static.app sends a `Content-Security-Policy` header
   (`connect-src 'self' https://*.static.domains https://static.app`) that silently blocks `fetch()` to any other
@@ -20,7 +25,7 @@ A phone app (progressive web app) for rugby referee coaches at sevens tournament
   post with `fetch`; there is no hidden form or vendor script for either any more.
 
 ## Rules that matter
-1. **Work on a branch and open a pull request.** Never push to `main`. Never merge. A merge to `main` deploys to GitHub Pages (and, if still configured, static.app).
+1. **Work on a branch and open a pull request.** Never push to `main`. Never merge. A merge to `main` deploys to Cloudflare (and, if still configured, static.app -- see above).
 2. **Do not change the upload fields** (`UP_FIELDS` in `index.html`) unless the task says so. Anyone exporting from SnapItForms, or from an old CSV, expects these column names to stay put. `node tools/check.js` fails if they change. If a change is on purpose, run `node tools/check.js --update-fields` and say so in the pull request.
 3. **Never put real names, keys or hosting tokens in the repo.** The static.app deploy key lives in the GitHub secret `STATICAPP_API_KEY`, never in a file. The SnapItForms access key (`SNAPIT_ACCESS_KEY` in `index.html`) is different: it has to sit in plain sight for a browser-only app to work, so it is not a secret Anthropic-style, but it should not be advertised -- anyone who has it can send junk into the SnapItForms dashboard. Demo data is made up.
 4. **Private notes stay private.** They must never appear in the shared summary, the email, or the print. They do go in uploads, backups and CSV exports.
