@@ -282,12 +282,16 @@ The app has not been tested on real phones yet. Everything below is either a des
 
 **Housekeeping**
 
-- **Not yet done -- needed before release 27 actually works:** create the D1 database (`wrangler d1 create sevens_results`), paste its ID into `wrangler.toml`, run the migration (`wrangler d1 execute sevens_results --remote --file=migrations/0001_init.sql`), then `wrangler secret put UPLOAD_KEY` and `wrangler secret put ADMIN_KEY`. `UPLOAD_KEY` in `index.html` must be changed from its placeholder to match the secret.
-- Once release 27 is confirmed working end to end, rotate or close the SnapItForms access key and account -- it is no longer written to, but old entries (releases 21 to 26) stay there until then.
+- Rotate or close the SnapItForms access key and account -- it is no longer written to, but old entries (releases 21 to 26) stay there until then. No longer blocked: release 27 is confirmed working end to end (see below).
 - Delete the test entries created verifying releases 25 and 26 from the SnapItForms dashboard before closing it, if you want a record of that period.
 - Decide on a licence for the code, or explicitly decide not to and note that choice somewhere -- less urgent now the repo is private, but still open.
 
 Already done, kept here as a record: the `coach7refs.nz` typo redirect is set up (a Cloudflare Redirect Rule, not
 registrar forwarding, since a DNS-only redirect cannot issue an HTTP redirect by itself -- the typo domain has a
 proxied placeholder DNS record purely so Cloudflare's edge sees the traffic to redirect it); the static.app deploy
-workflow and its secret and variable are removed (release 26).
+workflow and its secret and variable are removed (release 26); release 27's D1 database and both Worker secrets
+(`UPLOAD_KEY`, `ADMIN_KEY`) are set up and confirmed working end to end (27 Sept 2026) -- a real upload was verified
+landing in D1, then the test row was removed. Worth knowing if this ever needs redoing: a Worker's **Build
+configuration > Variables and secrets** in the Cloudflare dashboard does *not* bind a runtime secret, even though it
+looks like it should -- `env.UPLOAD_KEY` stayed unbound (empty) after setting a value there. `wrangler secret put
+UPLOAD_KEY` / `ADMIN_KEY` from the CLI is what actually worked, and is the reliable way to set either key.
