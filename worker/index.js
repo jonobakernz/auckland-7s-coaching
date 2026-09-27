@@ -31,6 +31,11 @@ function hasUploadKey(request, env) {
   return !!env.UPLOAD_KEY && request.headers.get('X-Upload-Key') === env.UPLOAD_KEY;
 }
 
+// TEMP DEBUG (remove once the production 401 is diagnosed): reveals only lengths, never values.
+function keyDebug(request, env) {
+  return { bound_key_length: (env.UPLOAD_KEY || '').length, header_length: (request.headers.get('X-Upload-Key') || '').length };
+}
+
 function hasAdminKey(request, env, url) {
   const key = url.searchParams.get('key') || request.headers.get('X-Admin-Key') || '';
   return !!env.ADMIN_KEY && key === env.ADMIN_KEY;
@@ -41,7 +46,7 @@ async function readJSON(request) {
 }
 
 async function saveResult(request, env) {
-  if (!hasUploadKey(request, env)) return json({ success: false, error: 'bad_key' }, 401);
+  if (!hasUploadKey(request, env)) return json({ success: false, error: 'bad_key', debug: keyDebug(request, env) }, 401);
   const p = await readJSON(request);
   const formId = String(p?.form_id || '').trim();
   const referee = String(p?.referee || '').trim();
@@ -68,7 +73,7 @@ async function exportResults(request, env, url) {
 }
 
 async function saveFeedback(request, env) {
-  if (!hasUploadKey(request, env)) return json({ success: false, error: 'bad_key' }, 401);
+  if (!hasUploadKey(request, env)) return json({ success: false, error: 'bad_key', debug: keyDebug(request, env) }, 401);
   const b = await readJSON(request);
   const message = String(b?.message || '').trim();
   if (!message) return json({ success: false, error: 'missing_message' }, 400);
