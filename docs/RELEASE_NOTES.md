@@ -1,6 +1,6 @@
 # Sevens Coaching Form: release notes
 
-Updated 27 Sept 2026. Current release: 27.
+Updated 27 Sept 2026. Current release: 28.
 
 ## At a glance
 
@@ -56,6 +56,7 @@ A coach can score a game in about 15 taps. Notes can be typed, spoken, or record
 **Match details**
 
 - Referee, field and time are always on screen. Coach, tournament, date, level, game and role sit under "Match details". The app remembers them.
+- A "Union" dropdown sits above Tournament under "Match details", listing the 24 New Zealand provincial unions. It is optional and carries over between forms the same way tournament and level do.
 - Coach sits beside Referee, Field and Time, always on screen. It is needed before the first upload.
 - If the organiser has set up a referee list, the app suggests names and checks the spelling.
 - Once the referee name and the rating are in, "Start next game" is ready. It copies the tournament, coach and level, and adds one to the game number. It does not need an upload first, so it works with no signal.
@@ -106,6 +107,7 @@ An organiser can set up a tournament with one scan and rank every referee across
 **Results**
 
 - Each upload is one row in this site's own database. Editing and re-uploading a form updates its row rather than adding another.
+- Uploads and CSV/JSON exports now include which provincial union hosted the tournament, alongside tournament, level and game.
 - Feedback from a coach goes into its own table in the same database. A bug report or feature idea never reaches it at all -- it opens a public GitHub issue instead.
 - The organiser exports results and feedback from a Worker URL (needs the `ADMIN_KEY` -- see the Support reference), not a third-party dashboard.
 - "Load results file" reads a CSV or JSON export and merges it. "Export ranking table (CSV)" saves the ranking.
@@ -117,10 +119,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 27 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 28 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 27 Sept 2026 | 28. Provincial union field in Match details | A new "Union" dropdown sits above Tournament under "Match details", listing the 24 New Zealand provincial unions. It carries over between forms like tournament and level do. Added to `UP_FIELDS` (`node tools/check.js --update-fields` run), so it uploads and exports alongside the other match details. | A "Union" dropdown above Tournament under "Match details". |
 | 27 Sept 2026 | 27. Results and feedback moved off SnapItForms, onto this site's own Cloudflare Worker and D1 database | `uploadOne()` and `submitFeedback()` now post to `/api/results` and `/api/feedback` on the same origin, not `api.snapitforms.com`. A new Worker (`worker/index.js`) writes to D1; organisers export with a Worker URL and `ADMIN_KEY` instead of the SnapItForms dashboard. `UPLOAD_KEY` in `index.html` replaces `SNAPIT_ACCESS_KEY`. Upload fields (`UP_FIELDS`) are unchanged. | No visible change to coaching or scoring. The upload status line no longer says "This is a trial upload service." |
 | 27 Sept 2026 | 26. Removed the static.app deploy workflow | The GitHub Actions workflow that deployed to static.app is deleted, along with the `STATICAPP_API_KEY` secret and `STATICAPP_PID` variable. That address (easy-goingcrow.staticdomains.app) is now permanently frozen at release 21's code and will never update again. Nothing about the app changed. | No visible change. Documentation and repository housekeeping only. |
 | 27 Sept 2026 | 25. Moved to Cloudflare, repo private again | Hosting moved from GitHub Pages to Cloudflare (a Worker with static assets), at a new custom domain, coach7srefs.nz. The repo went back to private, since Cloudflare does not force it public the way GitHub Pages did. GitHub Pages is now offline. No app code changed. | The address in the browser is coach7srefs.nz, not a staticdomains.app or github.io address. |
