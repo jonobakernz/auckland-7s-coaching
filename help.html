@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coach7sRefs — How to Guide</title>
+<meta name="description" content="How to use the Sevens Coaching Form app at a 7s tournament — for organisers and coaches.">
+<style>
+  :root{
+    --ink:#111111;
+    --paper:#eef1f2;
+    --card:#ffffff;
+    --accent:#f0c419;
+    --accent-ink:#111111;
+    --muted:#5b6266;
+    --line:#111111;
+    --green:#1f7a4d;
+    --green-bg:#e3f3ea;
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#f2f2f2;
+      --paper:#121416;
+      --card:#1b1e21;
+      --accent:#f0c419;
+      --accent-ink:#111111;
+      --muted:#a7adb1;
+      --line:#3a3f43;
+      --green:#57d197;
+      --green-bg:#123425;
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:inherit;
+    font-weight:900;
+    letter-spacing:-0.01em;
+    line-height:1.15;
+  }
+  a{color:var(--ink);}
+  p{margin:0 0 12px 0;}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px;}
+
+  /* Top bar, styled after the app's own black header + yellow rule */
+  header.topbar{
+    background:#111111;
+    color:#ffffff;
+    border-bottom:4px solid var(--accent);
+  }
+  header.topbar .inner{
+    max-width:880px;margin:0 auto;padding:22px 20px 20px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .logo7{
+    font-size:40px;font-weight:900;line-height:1;
+    background:var(--accent);color:#111;
+    width:52px;height:52px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:8px;
+  }
+  header.topbar h1{font-size:22px;margin:0;color:#fff;text-transform:uppercase;}
+  header.topbar .sub{font-size:13px;color:#c9c9c9;margin-top:2px;}
+
+  /* Quick-jump nav */
+  nav.toc{
+    background:var(--card);
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:5;
+    overflow-x:auto;
+    white-space:nowrap;
+    -webkit-overflow-scrolling:touch;
+  }
+  nav.toc .inner{max-width:880px;margin:0 auto;padding:10px 20px;display:flex;gap:8px;}
+  nav.toc a{
+    flex:none;
+    font-size:13px;font-weight:700;
+    text-decoration:none;
+    padding:7px 12px;
+    border:1.5px solid var(--line);
+    border-radius:999px;
+    color:var(--ink);
+    background:var(--paper);
+  }
+  nav.toc a:hover{background:var(--accent);border-color:var(--accent);}
+
+  main{padding:28px 0 10px;}
+
+  section{margin:0 0 46px 0;scroll-margin-top:56px;}
+  section h2{
+    font-size:22px;
+    margin:0 0 6px 0;
+    display:flex;align-items:baseline;gap:10px;
+  }
+  section h2 .num{
+    background:var(--ink);color:var(--paper);
+    font-size:14px;font-weight:900;
+    width:26px;height:26px;border-radius:6px;
+    display:inline-flex;align-items:center;justify-content:center;
+    flex:none;
+  }
+  section > .lead{color:var(--muted);font-size:15px;margin-bottom:18px;}
+
+  h3{font-size:16px;margin:22px 0 8px;}
+
+  .card{
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    margin:0 0 14px 0;
+  }
+
+  ol.steps{margin:0;padding-left:22px;}
+  ol.steps li{margin-bottom:12px;padding-left:2px;}
+  ol.steps li::marker{font-weight:900;}
+  ul.plain{margin:0;padding-left:20px;}
+  ul.plain li{margin-bottom:8px;}
+
+  .callout{
+    border:1.5px solid var(--line);
+    border-left:6px solid var(--accent);
+    background:var(--card);
+    border-radius:8px;
+    padding:12px 14px;
+    margin:14px 0;
+    font-size:14.5px;
+  }
+  .callout strong{display:block;margin-bottom:2px;text-transform:uppercase;font-size:12px;letter-spacing:.04em;color:var(--muted);}
+
+  .warn{border-left-color:#c0392b;}
+  .warn strong{color:#c0392b;}
+
+  .chip{
+    display:inline-block;
+    border:1.5px solid var(--line);
+    border-radius:999px;
+    padding:4px 11px;
+    font-size:12.5px;
+    margin:0 6px 6px 0;
+    background:var(--paper);
+  }
+
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px;}
+  .scale .n{
+    width:36px;height:36px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:15px;
+    background:var(--paper);
+  }
+  .scale .n.mid{background:var(--accent);border-color:var(--accent);color:#111;}
+
+  table.areas{width:100%;border-collapse:collapse;margin:10px 0 4px;font-size:14px;}
+  table.areas th, table.areas td{
+    border:1px solid var(--line);
+    padding:9px 10px;
+    text-align:left;
+    vertical-align:top;
+  }
+  table.areas th{background:var(--ink);color:var(--paper);font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;}
+  table.areas tr:nth-child(even) td{background:rgba(240,196,25,0.08);}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+
+  .tag-row{margin-top:6px;}
+
+  .btn-sample{
+    display:inline-block;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:8px 14px;
+    font-weight:800;
+    font-size:13.5px;
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .btn-sample.ghost{background:var(--card);color:var(--ink);}
+
+  footer{
+    border-top:1.5px solid var(--line);
+    padding:22px 0 40px;
+    font-size:13px;
+    color:var(--muted);
+  }
+  footer a{color:var(--ink);font-weight:700;}
+
+  code{
+    background:rgba(0,0,0,0.06);
+    border-radius:4px;
+    padding:1px 6px;
+    font-size:13px;
+  }
+  @media (prefers-color-scheme: dark){
+    code{background:rgba(255,255,255,0.1);}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="inner">
+    <div class="logo7">7</div>
+    <div>
+      <h1>Coaching Sevens</h1>
+      <div class="sub">How-to guide — using the app at a 7s tournament</div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="inner">
+    <a href="#overview">Overview</a>
+    <a href="#before">Before the day</a>
+    <a href="#install">Get the app</a>
+    <a href="#score">Score a game</a>
+    <a href="#save">Save &amp; upload</a>
+    <a href="#review">Review referees</a>
+    <a href="#settings">Settings &amp; training</a>
+    <a href="#faq">FAQ</a>
+    <a href="#quickref">Quick reference</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section id="overview">
+    <h2><span class="num">1</span>What this app does</h2>
+    <p class="lead">The Sevens Coaching Form turns paper referee-coaching sheets into a phone app. Coaches use it pitch-side. It works two ways at a tournament.</p>
+    <div class="two-col">
+      <div class="card">
+        <h3>For coaches</h3>
+        <p>Score a referee on 7 areas during a game, add quick feedback, then upload the result when you have signal. The form saves on your phone even with no signal at all.</p>
+      </div>
+      <div class="card">
+        <h3>For the organiser</h3>
+        <p>Set up the tournament once — fields, levels, coaches and referees. Share one link or QR code with every coach. After the games, see a ranked table of every referee.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Good to know</strong>
+      The app works offline. Forms save to the phone straight away, and upload later when there is signal. Nothing is lost while you wait for bars.
+    </div>
+  </section>
+
+  <section id="before">
+    <h2><span class="num">2</span>Before the tournament — organiser setup</h2>
+    <p class="lead">Do this once, a few days before the tournament. It saves every coach from typing the same details over and over.</p>
+    <ol class="steps">
+      <li>Open the app and go to the <strong>Setup</strong> tab.</li>
+      <li>Open <strong>Organiser: make a setup</strong>.</li>
+      <li>Fill in the tournament name and a short tournament code.</li>
+      <li>Add field names, separated by commas (for example <code>1, 2, 3, 4</code>).</li>
+      <li>Add the levels being played, one per line (for example <code>Pool play</code>, <code>Cup</code>, <code>Plate</code>).</li>
+      <li>Add the coaches, one per line, and the referees, one per line.</li>
+      <li>Tap <strong>Make setup link and QR</strong>.</li>
+      <li>Share the link or QR code with every coach before the first game. Print the QR code and pin it up at the coaches' table as a backup.</li>
+    </ol>
+    <div class="callout">
+      <strong>Tip</strong>
+      List every referee at the tournament in the setup, even ones who haven't been assessed yet. The Review tab then shows who still needs games, not just who has already been scored.
+    </div>
+    <div class="callout warn">
+      <strong>Not a password</strong>
+      The tournament code is a filter, not a security check. Anyone who has the code can send results in under it. That's fine for a tournament day — just don't treat it as private.
+    </div>
+  </section>
+
+  <section id="install">
+    <h2><span class="num">3</span>Getting the app onto each coach's phone</h2>
+    <p class="lead">The app installs like a normal app, straight from the browser — there's no app store step.</p>
+    <div class="two-col">
+      <div class="card">
+        <h3>iPhone / iPad</h3>
+        <p>Open <strong>coach7srefs.nz</strong> in Safari. Tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>. Always open the app from that new icon afterwards — Safari and the icon keep separate, unconnected sets of saved forms.</p>
+      </div>
+      <div class="card">
+        <h3>Android</h3>
+        <p>Open <strong>coach7srefs.nz</strong> in the browser. Open the browser menu and tap <strong>Install app</strong> (or use the <strong>Install this app</strong> button on the Saved tab).</p>
+      </div>
+    </div>
+    <ol class="steps">
+      <li>Once installed, open the app from its icon.</li>
+      <li>Go to <strong>Setup</strong> and either scan the organiser's QR code, or paste the setup link, then tap <strong>Use this setup</strong>.</li>
+      <li>The coach's own name, and the tournament's fields and levels, now appear as ready-made choices on the form.</li>
+      <li>To double-check what a setup loaded — without exporting anything — open Setup → This device → <strong>Referees and coaches</strong>.</li>
+    </ol>
+    <div class="callout">
+      <strong>New coach on the day?</strong>
+      They can still use the app without the setup link — they just type the field, tournament and level in by hand on the form.
+    </div>
+  </section>
+
+  <section id="score">
+    <h2><span class="num">4</span>Scoring a game</h2>
+    <p class="lead">This is what a coach does during and right after each game, on the <strong>Form</strong> tab.</p>
+
+    <h3>Match details</h3>
+    <ol class="steps">
+      <li>Fill in <strong>Referee</strong> and <strong>Coach</strong>. If the organiser's setup is loaded, the app suggests referee names and checks the spelling as you type.</li>
+      <li>Fill in <strong>Field</strong> and <strong>Time</strong>.</li>
+      <li>Open <strong>Match details</strong> to add the provincial <strong>Union</strong> hosting the tournament (optional — a dropdown of the 24 NZ provincial unions), the tournament name, date, level, game number, and the referee's role for this game (Referee, Assistant referee 1, or Assistant referee 2).</li>
+    </ol>
+    <div class="callout">
+      <strong>Saves you re-typing</strong>
+      Union, tournament, date and level all carry over automatically to the next form, the same way Start next game carries over the coach and field. You only need to set them once per tournament.
+    </div>
+
+    <h3>Scoring the 7 areas</h3>
+    <p>Each area is scored from 1 to 5. Tap a number to set it, tap it again to clear it. As you tap, a short line of text confirms what that score means for the level being played — for example, 3 means the referee met the standard for that level, 4 means above it.</p>
+    <div class="scale">
+      <div class="n">1</div><div class="n">2</div><div class="n mid">3</div><div class="n">4</div><div class="n">5</div>
+    </div>
+    <table class="areas">
+      <tr><th>Area</th><th>What it covers</th></tr>
+      <tr><td>Fitness</td><td>Ball in line, and speed to the breakdown.</td></tr>
+      <tr><td>Foul play</td><td>Managing foul play and sanctions, including yellow and red cards.</td></tr>
+      <tr><td>Breakdowns / turnovers</td><td>Tackle release, jackler rights, and calling turnovers.</td></tr>
+      <tr><td>Set phase</td><td>Scrums, lineouts, kick-offs and taps.</td></tr>
+      <tr><td>Game awareness</td><td>Reading play early, advantage, and position relative to the contest.</td></tr>
+      <tr><td>Game management</td><td>Clock and advantage management, sin-bins, and composure at key moments.</td></tr>
+      <tr><td>Communication</td><td>Voice, whistle and signals.</td></tr>
+    </table>
+    <p>Under each area, quick-tap tags add a common comment (for example <span class="chip">Fell behind play</span> <span class="chip">Clear whistle</span>). Tap one to drop it straight into the comment box, then edit or add to it as needed.</p>
+
+    <h3>Talking instead of typing</h3>
+    <ul class="plain">
+      <li><strong>Dictation</strong> (microphone icon) types what you say into a comment box. It needs signal, since it uses your phone's own speech service. Say "full stop", "comma" or "new line" for punctuation. Māori words and names often come out wrong, so check them afterwards.</li>
+      <li><strong>Voice notes</strong> (wave icon) record a short audio clip instead. These stay on the coach's phone only — they are never uploaded and are not included in backup files.</li>
+    </ul>
+
+    <h3>Wrapping up the form</h3>
+    <ol class="steps">
+      <li>Give the referee an overall <strong>Rating score</strong> (1 to 5) — this is the number used to rank referees later.</li>
+      <li>Add one thing the referee did well under <strong>Strength to keep</strong>.</li>
+      <li>Add one thing to improve under <strong>One thing to work on</strong>.</li>
+      <li>Use <strong>Private notes</strong> for anything you don't want the referee to see. Private notes are left out of the summary, email and printed copy — only the organiser sees them, and only after the form is uploaded.</li>
+    </ol>
+  </section>
+
+  <section id="save">
+    <h2><span class="num">5</span>Saving, uploading and sharing</h2>
+    <p class="lead">A form saves to the phone automatically as you fill it in — there's no separate save button and nothing is lost if signal drops.</p>
+    <ol class="steps">
+      <li>When the form is complete, tap <strong>Upload</strong>. This sends the result to the organiser's table used for ranking.</li>
+      <li>No signal yet? That's fine — the form stays saved on the phone, waiting. A yellow number on the <strong>Saved</strong> tab shows how many forms are waiting to go.</li>
+      <li>Back in signal? Open the Saved tab and tap <strong>Upload all waiting</strong> to send every queued form in one go, rather than opening each one.</li>
+      <li>As soon as the referee's name and rating score are in, tap <strong>Start next game</strong>. It copies the tournament, coach and level across and adds one to the game number — no upload needed first, so it works with no signal too.</li>
+    </ol>
+    <div class="callout">
+      <strong>Apply the setup first</strong>
+      Uploading before applying the organiser's setup code still works, but the result is uploaded with no tournament code attached. Apply the setup on the Setup tab first, so every result lines up correctly in Review.
+    </div>
+    <h3>Other ways to get a result out</h3>
+    <div class="two-col">
+      <div class="card"><strong>Email a copy</strong><p>Send the form to any address, including the referee's own.</p></div>
+      <div class="card"><strong>Share summary</strong><p>Shares the write-up, including any voice clips and text.</p></div>
+      <div class="card"><strong>Copy text</strong><p>Copies a plain-text version to paste anywhere.</p></div>
+      <div class="card"><strong>Print or save PDF</strong><p>A printable copy for a referee coordinator or a paper file.</p></div>
+    </div>
+    <h3>Managing saved forms — the Saved tab</h3>
+    <ul class="plain">
+      <li>See every form saved on this device, and whether each one has uploaded.</li>
+      <li><strong>Select forms to delete</strong> clears out old or test forms.</li>
+      <li><strong>Export all as spreadsheet (CSV)</strong> — a full local copy of every form on the device.</li>
+      <li><strong>Save backup file</strong> and <strong>Add forms from backup files</strong> — back up a phone before the tournament, or move forms onto another device.</li>
+    </ul>
+  </section>
+
+  <section id="review">
+    <h2><span class="num">6</span>Reviewing and ranking referees</h2>
+    <p class="lead">The <strong>Review</strong> tab is where the organiser watches results build up through the day, and ranks referees once the tournament is done.</p>
+    <ol class="steps">
+      <li>Filter by tournament, role, minimum number of games, and date range.</li>
+      <li>Tap any column heading to sort the table by it.</li>
+      <li>Tap a referee's name to read every comment left about them.</li>
+    </ol>
+    <div class="callout">
+      <strong>How the rank is worked out</strong>
+      Referees are ranked by their average overall Rating score. Referees with fewer than 3 games are marked <strong>provisional</strong> and given no rank yet — 3 games is the target before a rank counts. A tie is split using the average of the 7 area scores.
+    </div>
+    <h3>Adjusting for a hard or easy-marking coach</h3>
+    <p>Tick <strong>Adjust ratings for coach marking style</strong> to correct for coaches who consistently mark high or low. This only adjusts coaches who have submitted 3 or more forms — the <strong>Coach marking</strong> table below shows each coach's own average, and how it compares against all coaches.</p>
+    <h3>Referees who still need games</h3>
+    <p>The <strong>Needs more assessments</strong> list shows any referee below the 3-game target. Referees with no games at all only appear here if they were added to the organiser's setup list — another reason to list every referee up front.</p>
+    <h3>Fixing duplicate spellings</h3>
+    <p>If the same referee ends up listed twice under slightly different spellings, use <strong>Names</strong>. It spots names that look like the same person and offers to merge them into one.</p>
+    <h3>Getting the ranking out</h3>
+    <ul class="plain">
+      <li><strong>Export ranking table (CSV)</strong> — for a spreadsheet, a report, or a referee coordinator.</li>
+      <li><strong>Load results file</strong> — if the organiser has a results export from the site's server, load it here to rank every referee at once, rather than relying on live uploads alone.</li>
+    </ul>
+    <div class="callout">
+      <strong>Exports include the union</strong>
+      CSV and JSON exports carry which provincial union hosted the tournament, alongside the tournament, level and game.
+    </div>
+  </section>
+
+  <section id="settings">
+    <h2><span class="num">7</span>Settings, training and getting help</h2>
+    <div class="two-col">
+      <div class="card">
+        <h3>Display</h3>
+        <p>Choose Light, Dark, or match the phone automatically. There's also a high-contrast Sun mode (black and white, heavy edges) for bright sideline conditions.</p>
+      </div>
+      <div class="card">
+        <h3>Voice dictation</h3>
+        <p>Turn the dictation button on or off for everyone using this device, under Setup → Voice.</p>
+      </div>
+    </div>
+    <h3>Practising before the tournament</h3>
+    <p>Under Setup → <strong>Demo and training</strong>, tap <strong>Load the demo tournament</strong> to fill the app with a made-up tournament — 45 games, 12 referees and 4 coaches. Use it to show new coaches how the form and the Review tab work. Demo forms are never uploaded, and a coach's real forms are never affected. Tap <strong>Remove the demo data</strong> when training is done.</p>
+    <h3>Feedback and support</h3>
+    <ul class="plain">
+      <li><strong>Feedback for the organiser</strong> (Setup tab) sends a note straight to the organiser, the same way results upload — it needs signal.</li>
+      <li><strong>Bugs and ideas</strong> can go to GitHub (visible to anyone, so leave out real names) or by email instead, for a private note.</li>
+    </ul>
+  </section>
+
+  <section id="faq">
+    <h2><span class="num">8</span>Quick troubleshooting</h2>
+    <div class="card">
+      <p><strong>The form won't upload.</strong> Check for signal. The form stays safely saved on the phone either way — upload again later from the Saved tab.</p>
+      <p><strong>A coach can't see the tournament's fields, levels or coach list.</strong> They haven't applied the organiser's setup yet. Go to Setup, scan the QR code or paste the link, then tap Use this setup.</p>
+      <p><strong>A referee shows no rank, just "provisional".</strong> They have fewer than 3 games. Once they reach 3, a rank appears.</p>
+      <p><strong>Installed the app on an iPhone, but old forms are missing.</strong> Safari and the home-screen icon keep separate forms. Always open the app the same way — from the icon, not from Safari.</p>
+      <p><strong>Dictation is getting names wrong.</strong> This is expected, especially for Māori words and names — check and correct dictated text before saving.</p>
+      <p><strong>Someone uploaded a form before applying the setup code.</strong> It still uploads, just with no tournament code attached. Ask them to check Setup, then re-upload if needed.</p>
+    </div>
+  </section>
+
+  <section id="quickref">
+    <h2><span class="num">9</span>Quick reference card</h2>
+    <p class="lead">Everything on one card — worth printing and keeping at the coaches' table.</p>
+    <div class="card">
+      <table class="areas">
+        <tr><th>Step</th><th>What to do</th></tr>
+        <tr><td>1</td><td>Setup tab → scan or paste the organiser's tournament link.</td></tr>
+        <tr><td>2</td><td>Form tab → fill in referee, coach, field, time and match details (union, tournament, date, level, game, role).</td></tr>
+        <tr><td>3</td><td>Score all 7 areas, 1–5, with a comment for each.</td></tr>
+        <tr><td>4</td><td>Add an overall Rating score, plus a strength and one thing to improve.</td></tr>
+        <tr><td>5</td><td>Tap Upload. No signal? It's saved — upload later from Saved with Upload all waiting.</td></tr>
+        <tr><td>6</td><td>Organiser checks Review tab for the ranked table.</td></tr>
+      </table>
+      <div class="tag-row">
+        <span class="chip">Fitness</span>
+        <span class="chip">Foul play</span>
+        <span class="chip">Breakdowns / turnovers</span>
+        <span class="chip">Set phase</span>
+        <span class="chip">Game awareness</span>
+        <span class="chip">Game management</span>
+        <span class="chip">Communication</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>How-to guide for the Sevens Coaching Form app. Open the app itself at <a href="https://coach7srefs.nz/">coach7srefs.nz</a>.</p>
+  </div>
+</footer>
+
+</body>
+</html>
