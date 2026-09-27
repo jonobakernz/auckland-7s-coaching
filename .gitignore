@@ -6,6 +6,11 @@ __pycache__/
 node_modules/
 .DS_Store
 Thumbs.db
+# Local Wrangler/D1 dev state
+.wrangler/
 # Never commit keys
 .env
 *.key
+
+# Local Worker dev secrets (never commit real values)
+.dev.vars

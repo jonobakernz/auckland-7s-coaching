@@ -45,17 +45,27 @@ const fonts = [...new Set([...html.matchAll(/url\((fonts\/[^)]+)\)/g)].map((m) =
 const noFont = fonts.filter((f) => !exists(f));
 noFont.length ? bad('fonts named in the CSS are missing: ' + noFont.join(', ')) : ok(`all ${fonts.length} font files exist`);
 
-/* 5. Uploads and feedback both go to SnapItForms (a trial third-party backend, see CLAUDE.md).
- * Catch an unset key before it reaches the live site, and catch either of the old static.app
- * form hooks coming back by accident -- they only ever worked when static.app itself served the
- * page, which stopped being true once GitHub Pages became the host. */
-html.includes('static-form')
-  ? bad('a static.app form hook is back (static-form / static-form-id / id="up-form" / id="fb-form"). This project now uploads and sends feedback to SnapItForms instead -- remove it, or update this check if static.app is hosting again on purpose.')
-  : ok('no leftover static.app form hook');
-const keyMatch = html.match(/const SNAPIT_ACCESS_KEY = '([^']*)'/);
-if (!keyMatch) bad('SNAPIT_ACCESS_KEY is missing from index.html');
-else if (keyMatch[1].startsWith('REPLACE_WITH_') || !keyMatch[1]) bad('SNAPIT_ACCESS_KEY is still a placeholder. Uploads will not work until the real SnapItForms access key is put in.');
-else ok('SNAPIT_ACCESS_KEY looks like it has been set');
+/* 5. Uploads and feedback both go to this site's own Worker + D1 backend (see CLAUDE.md and
+ * worker/index.js). Catch an unset key before it reaches the live site, and catch either the old
+ * static.app form hooks or a SnapItForms endpoint coming back by accident. */
+html.includes('static-form') || /snapitforms\.com/i.test(html)
+  ? bad('a leftover static.app form hook or a SnapItForms endpoint is in index.html. Results and feedback now go to this site\'s own Worker (RESULTS_ENDPOINT / FEEDBACK_ENDPOINT) -- remove it, or update this check if a third-party backend is in use again on purpose.')
+  : ok('no leftover static.app or SnapItForms remnant');
+const endpointsSameOrigin = /const RESULTS_ENDPOINT = '\/api\/results';/.test(html) && /const FEEDBACK_ENDPOINT = '\/api\/feedback';/.test(html);
+endpointsSameOrigin ? ok('RESULTS_ENDPOINT and FEEDBACK_ENDPOINT are same-origin paths') : bad('RESULTS_ENDPOINT / FEEDBACK_ENDPOINT are missing or no longer point at the Worker\'s own /api/ paths');
+const keyMatch = html.match(/const UPLOAD_KEY = '([^']*)'/);
+if (!keyMatch) bad('UPLOAD_KEY is missing from index.html');
+else if (keyMatch[1].startsWith('REPLACE_WITH_') || !keyMatch[1]) bad('UPLOAD_KEY is still a placeholder. Uploads will not work until it matches the Worker\'s UPLOAD_KEY secret (wrangler secret put UPLOAD_KEY).');
+else ok('UPLOAD_KEY looks like it has been set');
+try {
+  const os = require('os');
+  const tmp = path.join(os.tmpdir(), 'sevens-worker-check.mjs');
+  fs.writeFileSync(tmp, read('worker/index.js'));
+  try { require('child_process').execFileSync(process.execPath, ['--check', tmp], { stdio: 'pipe' }); }
+  finally { fs.unlinkSync(tmp); }
+  ok('worker/index.js parses');
+} catch (e) { bad('worker/index.js has a syntax error: ' + (e.stderr || e.message)); }
+exists('wrangler.toml') ? ok('wrangler.toml exists') : bad('wrangler.toml is missing');
 
 /* 6. Upload fields must not change by accident. Static.app makes a NEW results table when they change. */
 try {

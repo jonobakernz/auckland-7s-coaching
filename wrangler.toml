@@ -1,0 +1,26 @@
+name = "sevens-coaching-form"
+main = "worker/index.js"
+compatibility_date = "2024-09-23"
+
+[assets]
+directory = "./"
+binding = "ASSETS"
+
+# Set up once per environment (not needed again after this):
+#   wrangler d1 create sevens_results
+#   -> paste the database_id it prints below
+#   wrangler d1 execute sevens_results --remote --file=migrations/0001_init.sql
+#   wrangler secret put UPLOAD_KEY    (must match UPLOAD_KEY in index.html)
+#   wrangler secret put ADMIN_KEY     (organiser-only export key; keep this one truly secret)
+[[d1_databases]]
+binding = "DB"
+database_name = "sevens_results"
+database_id = "c6787543-5a25-4ea8-9b3d-243ed2c7c418"
+
+# Cloudflare's per-PR preview builds run "wrangler preview", which refuses to touch the
+# production D1 database unless told to -- it requires this separate block naming a
+# preview-safe database instead. sevens_results_preview is its own database (same schema,
+# same migration), so a preview build's test rows never land in real coaching data.
+[[previews.d1_databases]]
+binding = "DB"
+database_id = "9f6d2b05-525b-4889-9aa0-7b87fbda1b29"

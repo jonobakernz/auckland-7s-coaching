@@ -1,0 +1,9 @@
+worker/
+migrations/
+wrangler.toml
+.git/
+.github/
+.wrangler/
+.dev.vars
+node_modules/
+.assetsignore

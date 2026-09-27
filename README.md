@@ -3,8 +3,9 @@
 A phone app for rugby referee coaches at sevens tournaments. A coach scores a game, saves it on the phone, and
 uploads it. Organisers rank referees across many games and coaches.
 
-It is a progressive web app: plain HTML, CSS and JavaScript, with no build step and no server code. It works
-offline.
+It is a progressive web app: plain HTML, CSS and JavaScript, with no build step. A small Cloudflare Worker
+(`worker/index.js`) stores results and feedback in a D1 database -- see "Results, feedback and the Worker" below.
+The app itself works offline.
 
 ![Demo overview](docs/demo-overview.png)
 
@@ -45,6 +46,9 @@ See [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for what changed in each rele
 | `tools/` | Scripts that make the demo data and the icons |
 | `docs/` | Release notes and the demo overview picture |
 | `.github/workflows/` | Runs `node tools/check.js` on every pull request |
+| `worker/index.js` | The Cloudflare Worker: serves the app and the `/api/results` and `/api/feedback` routes |
+| `migrations/` | D1 database schema (`0001_init.sql`) |
+| `wrangler.toml` | Wires the Worker, the static-assets binding and the D1 binding together |
 
 ## Run it on your computer
 
@@ -52,7 +56,10 @@ See [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for what changed in each rele
 python3 -m http.server 8000
 ```
 
-Open http://localhost:8000. Service workers and the camera work on `localhost`. Phones need HTTPS.
+Open http://localhost:8000. Service workers and the camera work on `localhost`. Phones need HTTPS. This serves the
+front end only -- `/api/results` and `/api/feedback` do not exist this way, so uploads and feedback report
+"offline". To exercise those too, run `wrangler dev` instead (it can use a local D1 database, so no live
+Cloudflare account access is needed just to test).
 
 ## Deploy
 
@@ -83,29 +90,39 @@ support private repositories on the Free plan; moving to Cloudflare removed that
 private. If it is ever made public again for any reason, the same care applies as before:
 
 - No real coaching data, referee names, or coach names should ever go into this repo. Real results and feedback
-  live in SnapItForms. The repo should only ever hold fictional demo data (see `demo/`).
-- `SNAPIT_ACCESS_KEY` in `index.html` sits in plain sight regardless of repo visibility, since it is already visible
-  to anyone who views the live page's source. It is not a security secret -- anyone who has it can send junk into
-  the SnapItForms dashboard, so do not advertise it beyond what is needed to run the app.
+  live in the D1 database. The repo should only ever hold fictional demo data (see `demo/`).
+- `UPLOAD_KEY` in `index.html` sits in plain sight regardless of repo visibility, since it is already visible
+  to anyone who views the live page's source. It is not a security secret -- anyone who has it can write junk rows
+  into the database, so do not advertise it beyond what is needed to run the app. `ADMIN_KEY` is different: it is a
+  real secret, set only with `wrangler secret put ADMIN_KEY`, and must never appear in this repo.
 - `CLAUDE.md`'s rule about never putting real names in the repo applies at all times, not just while it is public.
 
-## Results, feedback and SnapItForms
+## Results, feedback and the Worker
 
-Coaching-results uploads and in-app feedback both go to [SnapItForms](https://snapitforms.com/), a third-party
-form backend. It is new to this project, so watch real submissions closely and be ready to move to another
-service if it does not hold up.
+Coaching-results uploads and in-app feedback are stored in this site's own Cloudflare D1 database, written
+through the Worker in `worker/index.js`. This replaced [SnapItForms](https://snapitforms.com/), a third-party
+form backend used briefly as a trial (Sept 2026) with no independent track record -- see
+[docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for that history.
 
-- Each game, and each piece of feedback, is one submission in the SnapItForms dashboard, told apart by a `kind`
-  field. Export it from there as CSV.
-- `SNAPIT_ACCESS_KEY`, near the top of `index.html`, must hold a real access key from your SnapItForms account
-  before uploads or feedback will do anything. `node tools/check.js` fails on the placeholder value on purpose,
-  so a deploy with no key configured is caught before it goes out.
-- If a submission fails for a reason other than "no signal" (SnapItForms down, a rejected key), the coach sees a
+- `POST /api/results` and `POST /api/feedback` accept an upload and a feedback message. Each needs the
+  `X-Upload-Key` header to match the Worker's `UPLOAD_KEY` secret -- `UPLOAD_KEY` near the top of `index.html`
+  must hold the same value, or uploads and feedback will do nothing. `node tools/check.js` fails on the
+  placeholder value on purpose, so a deploy with no key configured is caught before it goes out.
+- `GET /api/results?key=...` (CSV by default, `&format=json` for JSON) and `GET /api/feedback?key=...` are the
+  organiser-only export, gated by `ADMIN_KEY` -- a real secret, set once with `wrangler secret put ADMIN_KEY` and
+  never written to a file.
+- One-off setup for a new environment: `wrangler d1 create sevens_results`, paste the database ID it prints into
+  `wrangler.toml`, run `wrangler d1 execute sevens_results --remote --file=migrations/0001_init.sql`, then
+  `wrangler secret put UPLOAD_KEY` and `wrangler secret put ADMIN_KEY`.
+- If a submission fails for a reason other than "no signal" (the Worker down, a rejected key), the coach sees a
   generic failure message. Either way the form or the feedback text stays on the phone until it sends -- nothing
   is lost.
 - Do not add or rename fields in `UP_FIELDS` (`index.html`) without a plan. Anyone exporting a CSV, or loading an
-  older one, expects the column names to stay put. `node tools/check.js` catches an accidental change.
-- Nothing in the app reads results back live. Export the entries, then use Review, then Load results file.
+  older one, expects the column names to stay put. `node tools/check.js` catches an accidental change. The D1
+  schema (`migrations/0001_init.sql`) stores each submission as JSON, so it does not need to change when
+  `UP_FIELDS` does.
+- Nothing in the app reads results back live. Ask the organiser to hit the export URL, then use Review, then
+  Load results file.
 
 ## Data on the phone
 
@@ -123,8 +140,8 @@ service if it does not hold up.
 - On iPhone, Safari and the Home Screen icon keep separate storage. Install first, then always open from the
   icon.
 - The tournament code is a filter, not a password. Anyone who has it can send results.
-- Results name real people. Keep exports and your SnapItForms account private, and follow your privacy rules (for
-  example the NZ Privacy Act 2020).
+- Results name real people. Keep exports and the D1 database's `ADMIN_KEY` private, and follow your privacy rules
+  (for example the NZ Privacy Act 2020).
 
 ## Change the content
 
@@ -142,8 +159,8 @@ service if it does not hold up.
 ## Tests
 
 There is no test suite in the repo. The app was checked with Playwright on phone-size screens, an accessibility
-scan (axe), a fake camera for QR scanning, a fake microphone for voice notes, and a mock of `fetch` for
-SnapItForms uploads and feedback. Real speech recognition and a real SnapItForms submission have not been
+scan (axe), a fake camera for QR scanning, a fake microphone for voice notes, and a mock of `fetch` for the
+Worker's upload and feedback routes. Real speech recognition and a real Worker/D1 round trip have not been
 tested. Add your own tests if you grow the app.
 
 ## Licence

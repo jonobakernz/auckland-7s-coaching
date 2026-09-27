@@ -500,7 +500,7 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
         <button type="button" class="btn" data-act="loadres">Load results file</button>
         <input type="file" id="resfile" accept=".csv,.json,text/csv,application/json" hidden>
       </div>
-      <p class="note" style="margin-top:14px">Uploaded results are collected in the static.app account for this site. Export the entries there, then choose Load results file to rank every referee.</p>
+      <p class="note" style="margin-top:14px">Uploaded results are collected on this site's own server. Ask the organiser for a results export (CSV), then choose Load results file to rank every referee.</p>
     </div>
     <div id="rv-detail" hidden></div>
   </div>
@@ -851,7 +851,7 @@ function updateUploadUI() {
   b.disabled = upBusy || st === 'done';
   b.textContent = upBusy ? 'Uploading...' : st === 'changed' ? 'Upload changes' : st === 'done' ? 'Uploaded' : 'Upload results';
   $('#next-btn').hidden = !(st === 'done' || (cur.referee.trim() && cur.scores.rating));
-  t.textContent = st === 'done' ? `Uploaded ${fmtStamp(cur.uploadedAt)}${cfg.c ? ' with the tournament code' : ', no tournament code'}. This is a trial upload service. Edit the form to upload changes.`
+  t.textContent = st === 'done' ? `Uploaded ${fmtStamp(cur.uploadedAt)}${cfg.c ? ' with the tournament code' : ', no tournament code'}. Edit the form to upload changes.`
     : st === 'changed' ? 'Changed since the last upload.'
     : 'Not uploaded yet. The form is saved on this device.';
 }
@@ -1353,20 +1353,18 @@ $('#restore').addEventListener('change', async (e) => {
 });
 
 /* ---------- Upload results ----------
- * TRIAL: results are sent to SnapItForms (api.snapitforms.com), not static.app.
- * SnapItForms is a small third-party form backend with no independent track record found at the
- * time this was added (Sept 2026) -- see CLAUDE.md and the pull request for the reasoning. Treat
- * this as a trial: test with real submissions and watch it for a few weeks before trusting it for
- * a real tournament. The access key below is not a high-value secret (it has to be visible in the
- * page for a browser-only app), but do not publish it -- anyone who has it can send junk into the
- * SnapItForms dashboard, the same caution as the tournament code.
- * The separate feedback form just below this still goes to static.app -- it was not part of this
- * change.
+ * Results and feedback are stored in this site's own Cloudflare Worker and D1 database, not a
+ * third party -- see CLAUDE.md and wrangler.toml. Both post JSON to a same-origin path, so there is
+ * no cross-origin fetch to worry about. UPLOAD_KEY is not a high-value secret (it has to be visible
+ * in the page for a browser-only app), but do not publish it -- anyone who has it can write junk
+ * rows into the database, the same caution as the tournament code. Organisers export results with
+ * ADMIN_KEY, a real secret that is never in this file (see wrangler.toml).
  */
-const SNAPIT_ENDPOINT = 'https://api.snapitforms.com/submit';
-const SNAPIT_ACCESS_KEY = 'sf_169bdf63542fa54907f80a82327b63f0'; // snapitforms.com, sign in with Google, copy the access key here.
+const RESULTS_ENDPOINT = '/api/results';
+const FEEDBACK_ENDPOINT = '/api/feedback';
+const UPLOAD_KEY = 'purescale99'; // must match the Worker's UPLOAD_KEY secret (wrangler secret put UPLOAD_KEY).
 
-/* Bugs and ideas go to the public GitHub repo instead of the organiser's SnapItForms dashboard --
+/* Bugs and ideas go to the public GitHub repo instead of the organiser's results database --
  * it's a separate audience (the people who build the app, not the one running this tournament) and
  * a separate channel, so a report never lands next to real coaching data. No access key needed: it's
  * just a prefilled "new issue" link that opens in the coach's own browser. */
@@ -1398,37 +1396,30 @@ function payload(f) {
 }
 
 /* Throws Error('offline') when there is no point trying (no signal, or the key is not set up
- * yet), and Error('failed') for anything the network or SnapItForms rejected. A cross-origin
- * fetch to a third party can be blocked by the browser before it even reaches SnapItForms if
- * their API does not allow fetch/CORS the way this expects (their published example is a plain
- * HTML form, not fetch) -- that shows up here as a generic network failure, which is why the
- * first real submission after this ships must be watched closely against the SnapItForms
- * dashboard, not just the message in this app. */
+ * yet), and Error('failed') for anything the network or the Worker rejected. Same origin as the
+ * page, so no CORS surprises the way a third-party endpoint could cause. */
 async function uploadOne(f) {
   if (!navigator.onLine) throw new Error('offline');
-  if (!SNAPIT_ACCESS_KEY || SNAPIT_ACCESS_KEY.startsWith('REPLACE_WITH_')) throw new Error('offline');
+  if (!UPLOAD_KEY || UPLOAD_KEY.startsWith('REPLACE_WITH_')) throw new Error('offline');
   const p = payload(f);
-  const body = new FormData();
-  body.append('access_key', SNAPIT_ACCESS_KEY);
-  for (const k of UP_FIELDS) body.append(k, p[k] ?? '');
   const ctrl = new AbortController();
   const limit = setTimeout(() => ctrl.abort(), 25000);
   let res;
   try {
-    res = await fetch(SNAPIT_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body, signal: ctrl.signal });
+    res = await fetch(RESULTS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Upload-Key': UPLOAD_KEY },
+      body: JSON.stringify(p),
+      signal: ctrl.signal
+    });
   } catch {
     throw new Error('failed');
   } finally {
     clearTimeout(limit);
   }
   if (!res.ok) throw new Error('failed');
-  try {
-    const data = await res.clone().json();
-    if (data && data.success === false) throw new Error('failed');
-  } catch (e) {
-    if (e instanceof SyntaxError) { /* not every success reply is JSON; a 2xx with no JSON body still counts as sent */ }
-    else throw e;
-  }
+  const data = await res.json().catch(() => null);
+  if (data && data.success === false) throw new Error('failed');
 }
 
 async function doUpload(list) {
@@ -1454,8 +1445,8 @@ async function doUpload(list) {
   updateTabs();
   if (!$('#view-saved').hidden) renderSaved();
   if (!err) toast(ok === 1 ? 'Results uploaded' : `${ok} forms uploaded`);
-  else if (err.message === 'offline') toast(SNAPIT_ACCESS_KEY.startsWith('REPLACE_WITH_')
-    ? 'Uploads are not set up yet. See SNAPIT_ACCESS_KEY in index.html.'
+  else if (err.message === 'offline') toast(UPLOAD_KEY.startsWith('REPLACE_WITH_')
+    ? 'Uploads are not set up yet. See UPLOAD_KEY in index.html.'
     : 'No connection. The forms are saved. Try again with signal.');
   else if (list.length === 1) toast('Upload did not work. Try again.');
   else {
@@ -1465,41 +1456,33 @@ async function doUpload(list) {
 }
 
 /* ---------- Feedback ----------
- * Posts to the same SnapItForms account as results upload, marked with kind: 'feedback' so it
- * can be told apart in the dashboard. Used to go through static.app's own injected form script,
- * which only ever worked because static.app itself served the page; that stopped being true once
- * the app moved to GitHub Pages (see CLAUDE.md), so this now posts with fetch like uploadOne().
+ * Posts to its own D1 table, kept separate from results (see worker/index.js). Same-origin fetch,
+ * like uploadOne().
  */
 let fbBusy = false;
 
 async function submitFeedback(msg) {
   if (!navigator.onLine) throw new Error('offline');
-  if (!SNAPIT_ACCESS_KEY || SNAPIT_ACCESS_KEY.startsWith('REPLACE_WITH_')) throw new Error('offline');
-  const body = new FormData();
-  body.append('access_key', SNAPIT_ACCESS_KEY);
-  body.append('kind', 'feedback');
-  body.append('message', msg);
-  body.append('tournament', (cfg.t || '').trim());
-  body.append('coach', (cur.coach || '').trim());
-  body.append('device', navigator.userAgent);
+  if (!UPLOAD_KEY || UPLOAD_KEY.startsWith('REPLACE_WITH_')) throw new Error('offline');
+  const body = { message: msg, tournament: (cfg.t || '').trim(), coach: (cur.coach || '').trim(), device: navigator.userAgent };
   const ctrl = new AbortController();
   const limit = setTimeout(() => ctrl.abort(), 25000);
   let res;
   try {
-    res = await fetch(SNAPIT_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body, signal: ctrl.signal });
+    res = await fetch(FEEDBACK_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Upload-Key': UPLOAD_KEY },
+      body: JSON.stringify(body),
+      signal: ctrl.signal
+    });
   } catch {
     throw new Error('failed');
   } finally {
     clearTimeout(limit);
   }
   if (!res.ok) throw new Error('failed');
-  try {
-    const data = await res.clone().json();
-    if (data && data.success === false) throw new Error('failed');
-  } catch (e) {
-    if (e instanceof SyntaxError) { /* a 2xx with no JSON body still counts as sent */ }
-    else throw e;
-  }
+  const data = await res.json().catch(() => null);
+  if (data && data.success === false) throw new Error('failed');
 }
 
 /* ---------- Referee review ---------- */
@@ -1791,7 +1774,7 @@ function exportRanking() {
   download(`sevens-referee-ranking-${today()}.csv`, 'text/csv;charset=utf-8', csv);
 }
 
-/* ---------- Load a results file (static.app export, API entries or backup) ---------- */
+/* ---------- Load a results file (Worker export, flat CSV/JSON or backup) ---------- */
 const normKey = (k) => String(k ?? '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 function hashStr(s) { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
 function csvToObjects(text) {
