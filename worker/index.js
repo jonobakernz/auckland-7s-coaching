@@ -89,6 +89,14 @@ async function exportFeedback(request, env, url) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // Serve the how-to guide on the help subdomain, whatever path is requested.
+    if (url.hostname === 'help.coach7srefs.nz') {
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = '/help.html';
+      return env.ASSETS.fetch(new Request(assetUrl, request));
+    }
+
     if (url.pathname === '/api/results') {
       if (request.method === 'POST') return saveResult(request, env);
       if (request.method === 'GET') return exportResults(request, env, url);
