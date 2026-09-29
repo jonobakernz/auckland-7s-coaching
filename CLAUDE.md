@@ -1,4 +1,4 @@
-# Sevens Coaching Form: notes for Claude
+# Auckland 7s Coaching: notes for Claude
 
 A phone app (progressive web app) for rugby referee coaches at sevens tournaments. Coaches score games, save them on the phone, and upload them. Organisers rank referees. Read `README.md` for the full picture and `docs/RELEASE_NOTES.md` for support notes.
 

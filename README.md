@@ -1,13 +1,11 @@
-# Sevens Coaching Form
+# Auckland 7s Coaching
 
-A phone app for rugby referee coaches at sevens tournaments. A coach scores a game, saves it on the phone, and
-uploads it. Organisers rank referees across many games and coaches.
+A phone app for Auckland Rugby Referees' coaches at sevens tournaments. A coach scores a game, saves it on the
+phone, and uploads it. Organisers rank referees across many games and coaches.
 
 It is a progressive web app: plain HTML, CSS and JavaScript, with no build step. A small Cloudflare Worker
 (`worker/index.js`) stores results and feedback in a D1 database -- see "Results, feedback and the Worker" below.
 The app itself works offline.
-
-![Demo overview](docs/demo-overview.png)
 
 ## What it does
 
@@ -40,11 +38,11 @@ See [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for what changed in each rele
 | `index.html` | The whole app: page, styles and script |
 | `sw.js` | Service worker for offline use |
 | `manifest.webmanifest` | Install details |
-| `icons/`, `fonts/` | App icons and the Oswald and Source Sans 3 fonts (SIL Open Font License) |
+| `icons/`, `fonts/` | App icons, the Auckland Rugby Referees crest (`icons/arra-crest.png`), and the Oswald and Source Sans 3 fonts (SIL Open Font License) |
 | `lib/` | QR code maker and QR scanner. Loaded only when used. See `lib/LICENSES.txt` |
 | `demo/` | Made-up tournament data: `demo.json`, plus a CSV and a backup file for testing |
 | `tools/` | Scripts that make the demo data and the icons |
-| `docs/` | Release notes and the demo overview picture |
+| `docs/` | Release notes |
 | `.github/workflows/checks.yml` | Runs `node tools/check.js` on every pull request |
 | `.github/workflows/pages.yml`, `.github/pages-exclude.txt` | Deploys the static app to GitHub Pages on every push to `main` |
 | `worker/index.js` | The Cloudflare Worker: an API-only backend for the `/api/results` and `/api/feedback` routes (does not serve the app -- GitHub Pages does) |
@@ -175,8 +173,7 @@ tested. Add your own tests if you grow the app.
 
 ## Licence
 
-No licence is set for the app code. The repo is private now, so this is less urgent than it was during the period
-it was public -- but it is still worth a deliberate choice if this is ever shared or made public again. With no
-licence file, default copyright applies: nobody else has legal permission to copy, modify or reuse the code. Add a
-`LICENSE` file if you want to state something different. Third-party code and fonts keep their own licences (see
-`lib/LICENSES.txt` and `fonts/LICENSE.txt`).
+No licence is set for the app code. The repo is public (see "Repo privacy" above), so this is worth a deliberate
+choice. With no licence file, default copyright applies: nobody else has legal permission to copy, modify or reuse
+the code. Add a `LICENSE` file if you want to state something different. Third-party code and fonts keep their own
+licences (see `lib/LICENSES.txt` and `fonts/LICENSE.txt`).
