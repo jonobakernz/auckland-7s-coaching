@@ -13,7 +13,7 @@ FONT = sys.argv[1] if len(sys.argv) > 1 else 'BarlowCondensed-800.ttf'
 
 def make(size, path):
     S = size * 4
-    img = Image.new('RGB', (S, S), '#111214')
+    img = Image.new('RGB', (S, S), '#0E234B')
     d = ImageDraw.Draw(img)
     f = ImageFont.truetype(FONT, int(S * 0.62))
     d.text((S * 0.47, S * 0.46), '7', font=f, fill='#FFFFFF', anchor='mm')

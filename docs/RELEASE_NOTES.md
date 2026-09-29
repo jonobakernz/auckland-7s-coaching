@@ -1,6 +1,6 @@
 # Sevens Coaching Form: release notes
 
-Updated 29 Sept 2026. Current release: 29.
+Updated 29 Sept 2026. Current release: 30.
 
 ## At a glance
 
@@ -25,7 +25,7 @@ sets up a tournament with one QR code and reviews every referee in one table.
 
 Main changes since the first release:
 
-- A New Zealand rugby look, with a black jersey theme and te reo Māori labels.
+- A New Zealand rugby look, in Auckland Rugby Referees' navy and gold, with te reo Māori labels.
 - Eight scored areas, score meanings, quick notes and feedback boxes.
 - Dictation and voice notes in every comment box.
 - Upload, email, share and print options.
@@ -76,7 +76,7 @@ A coach can score a game in about 15 taps. Notes can be typed, spoken, or record
 
 **Look and feel**
 
-- A black jersey theme, a welcome screen on the first visit, and a compact header after that.
+- A navy jersey theme in Auckland Rugby Referees' colours, a welcome screen on the first visit, and a compact header after that.
 - Four tabs at the top: Form, Saved, Review and Setup.
 - Larger buttons and clearer text. The accessibility scan finds no problems.
 - Sun mode (white and black, heavy edges) for bright fields. Dark mode follows the phone.
@@ -119,10 +119,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 29 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 30 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 29 Sept 2026 | 30. Auckland Rugby Referees colours | The jersey theme (header, tabs, primary buttons, selected states, review table headers) changed from near-black to Auckland Rugby Referees' navy (`#0E234B`), matching their site at arra.org.nz. The gold used for the yellow-card accent was already close to ARRA's gold and is unchanged. The app icon and browser theme colour were regenerated to match. No fields, scoring or layout changed. | The header, tab bar and primary buttons are navy blue instead of near-black. |
 | 29 Sept 2026 | 29. Areas regrouped under Auckland Rugby Referees' three coaching priorities | The 7 scored areas are unchanged, but now sit under three group headings from Auckland Rugby Referees' "Sevens Priorities & Application" session: Decision-making accuracy (Foul play, Breakdowns / tackle, Restarts -- renamed from Set phase), Referee positioning (Positioning & fitness -- renamed from Fitness, now also holding the distance-from-contest chips, moved off Game awareness), and Game feel & awareness (Game awareness, Game management, Communication). Quick-note tags were refreshed with wording from that session (e.g. "Jackler stayed on feet to contest", "Kept to the 30-second kick clock"). `UP_FIELDS` order changed to match (`node tools/check.js --update-fields` run) -- field names themselves did not change. | Three bold section headings (Decision-making accuracy / Referee positioning / Game feel & awareness) above the score rows. Distance from contest now sits under Positioning & fitness, not Game awareness. |
 | 27 Sept 2026 | 28. Provincial union field in Match details | A new "Union" dropdown sits above Tournament under "Match details", listing the 24 New Zealand provincial unions. It carries over between forms like tournament and level do. Added to `UP_FIELDS` (`node tools/check.js --update-fields` run), so it uploads and exports alongside the other match details. | A "Union" dropdown above Tournament under "Match details". |
 | 27 Sept 2026 | 27. Results and feedback moved off SnapItForms, onto this site's own Cloudflare Worker and D1 database | `uploadOne()` and `submitFeedback()` now post to `/api/results` and `/api/feedback` on the same origin, not `api.snapitforms.com`. A new Worker (`worker/index.js`) writes to D1; organisers export with a Worker URL and `ADMIN_KEY` instead of the SnapItForms dashboard. `UPLOAD_KEY` in `index.html` replaces `SNAPIT_ACCESS_KEY`. Upload fields (`UP_FIELDS`) are unchanged. | No visible change to coaching or scoring. The upload status line no longer says "This is a trial upload service." |
@@ -185,6 +186,7 @@ The app does not show a release number yet. Use the features on the screen to te
 | "Referees and coaches" under "This device" in Setup | 16 |
 | A "Feedback" section in Setup | 18 |
 | A "Bugs and ideas" section in Setup | 23 |
+| A navy header instead of a near-black one | 30 |
 
 Clearing browser data, or removing the app, deletes saved forms and voice notes. Ask the coach to save a backup file first. Backup files do not hold voice notes.
 
