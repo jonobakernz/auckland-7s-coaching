@@ -1402,10 +1402,10 @@ $('#restore').addEventListener('change', async (e) => {
  * caution as the tournament code. Organisers export results with ADMIN_KEY, a real secret that is
  * never in this file (see wrangler.toml).
  */
-const API_BASE = 'https://REPLACE_WITH_YOUR_WORKER_URL'; // e.g. https://auckland-7s-coaching-api.<your-subdomain>.workers.dev -- set after `wrangler deploy`.
+const API_BASE = 'https://auckland-7s-coaching-api.simplsolutions.workers.dev';
 const RESULTS_ENDPOINT = API_BASE + '/api/results';
 const FEEDBACK_ENDPOINT = API_BASE + '/api/feedback';
-const UPLOAD_KEY = 'REPLACE_WITH_YOUR_UPLOAD_KEY'; // must match the Worker's UPLOAD_KEY secret (wrangler secret put UPLOAD_KEY).
+const UPLOAD_KEY = '01053b2bc16b1b3bd1ee63455e530983'; // must match the Worker's UPLOAD_KEY secret (wrangler secret put UPLOAD_KEY).
 
 /* Bugs and ideas go to the public GitHub repo instead of the organiser's results database --
  * it's a separate audience (the people who build the app, not the one running this tournament) and
