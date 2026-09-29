@@ -1,12 +1,12 @@
 # Sevens Coaching Form: release notes
 
-Updated 29 Sept 2026. Current release: 33.
+Updated 29 Sept 2026. Current release: 34.
 
 **This file was inherited from `sevens-coaching-form`, the project this repo (`auckland-7s-coaching`) was copied
 from.** Releases 1 to 29 document that project's own history -- including its domain (`coach7srefs.nz`), its
 GitHub Pages and static.app past, and its SnapItForms trial. None of that is this project's history: this project
-has never been deployed anywhere, and must never be pointed at that project's domain, Worker, D1 database or
-secrets. Those entries are kept only because the code features they describe (the eight-area scoring, the
+has its own, separate deploy history from release 30 onward, and must never be pointed at that project's domain,
+Worker, D1 database or secrets. Those entries are kept only because the code features they describe (the eight-area scoring, the
 Worker/D1 upload backend, and so on) are the same features this project inherited. Release 30 onward is this
 project's own history. See "Support reference" below for this project's actual, current status.
 
@@ -122,10 +122,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 33 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 34 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 29 Sept 2026 | 34. Removed distance from contest | The "Distance from contest" chips (Too close, In the way, Good position) and their own comment box, under Referee positioning, are gone -- along with the flags in the form record, the review page's per-referee flag counts, the CSV/summary text mentions, and the four upload/export columns they used (`too_close`, `in_the_way`, `good_position`, `contest_comments`). `UP_FIELDS` drops from 28 to 24 fields (`node tools/check.js --update-fields` run). No other scoring changed. | Referee positioning goes straight from its score row to Comments -- no chip row or extra comment box underneath. The Review tab's referee detail no longer mentions distance from contest. |
 | 29 Sept 2026 | 33. Scoring cut down to Auckland Rugby Referees' three priorities | The 7 scored sub-areas (Foul play, Breakdowns / tackle, Restarts, Positioning & fitness, Game awareness, Game management, Communication) are replaced by one scored row per priority: Decision-making accuracy, Referee positioning, Game feel & awareness. Each row's quick-note tags are a short, representative set drawn from the same source (the "Sevens Priorities & Application" session), not the full list every sub-area had. Distance from contest stays under Referee positioning. `UP_FIELDS` changed from 36 to 28 fields (`node tools/check.js --update-fields` run) -- anyone exporting from the Worker or an old CSV will see fewer score/comment columns. Demo data and `help.html` were updated to match. | The Form tab shows 3 score rows instead of 7, with no group headings above them (each row is already one priority). The Review table's per-area columns are now Decisions / Positioning / Awareness instead of seven separate columns. |
 | 29 Sept 2026 | 32. Cloudflare Worker and D1 database connected | A new, API-only Worker (`auckland-7s-coaching-api`) and D1 database (`auckland_7s_results`, plus an `auckland_7s_results_preview` database) were created on the same Cloudflare account as `sevens-coaching-form` but kept fully separate -- neither the Worker name nor the database is shared. The migration was run, fresh `UPLOAD_KEY` and `ADMIN_KEY` secrets were set on the Worker, and `API_BASE` / `UPLOAD_KEY` in `index.html` were updated to match. No scoring, fields or layout changed. | Uploads and feedback now go through instead of saying "not set up yet". |
 | 29 Sept 2026 | 31. Hosting: GitHub Pages for the app, a separate Cloudflare Worker for results and feedback | A deliberate, different choice from `sevens-coaching-form`: the front end deploys to GitHub Pages (`.github/workflows/pages.yml`) instead of a Cloudflare Worker with static assets, which makes this repo public (GitHub Pages on the Free plan only serves public repos). `worker/index.js` is now API-only (no `[assets]` binding, no help-subdomain routing) and sends CORS headers, since GitHub Pages and the Worker are different origins. `index.html`'s `RESULTS_ENDPOINT` / `FEEDBACK_ENDPOINT` changed from same-origin paths to full URLs built from a new `API_BASE` constant, set once the Worker is deployed. No scoring, fields or layout changed. | The app is reachable at jonobakernz.github.io/auckland-7s-coaching. Uploads still say "not set up yet" until both `API_BASE` and `UPLOAD_KEY` are set. |

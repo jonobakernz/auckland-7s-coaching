@@ -172,14 +172,6 @@ body[data-dict=off] .dcbtn { display: none; }
 .vnbar .recl i { width: 12px; height: 12px; border-radius: 50%; background: var(--card-r); }
 .vnbar .btn.small { min-height: 44px; padding: 0 12px; font-size: 18px; }
 .row.notes .vnbar, .row.priv .vnbar { margin-top: 6px; }
-.contest { margin-top: 20px; padding-top: 16px; border-top: 3px dotted var(--silver); }
-.contest h3 { margin: 0 0 10px; font: 800 22px/1.1 var(--display); letter-spacing: .01em; }
-.chips { display: flex; gap: 8px; margin-bottom: 10px; }
-.chip { flex: 1; min-height: 50px; padding: 0 4px; border-radius: 6px; border: var(--bw) solid var(--edge); background: var(--paper); font: 700 20px/1 var(--display); letter-spacing: .02em; }
-.chip[aria-pressed=true] { background: var(--sel-bg); color: var(--sel-ink); border-color: var(--sel-bg); box-shadow: inset 0 -4px 0 var(--card-y); }
-.chip.alt { margin-left: 6px; position: relative; }
-.chip.alt::before { content: ""; position: absolute; left: -9px; top: 8px; bottom: 8px; width: 2px; background: var(--line); }
-.contest .sub { margin: 0 0 10px; }
 .row.rating { background: var(--paper); margin-top: 4px; border-top: 4px solid var(--ink); }
 .row.rating::before { display: none; }
 .row.rating h2 { font-size: 34px; }
@@ -311,9 +303,8 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
   .more summary { display: none; }
   input, textarea, select { border: 0; border-bottom: 1px solid #999; border-radius: 0; background: #fff; color: #000; padding: 4px 0; min-height: 0; }
   textarea { resize: none; }
-  .scale button, .chip { min-height: 32px; border: 1px solid #000; background: #fff; color: #000; }
-  .scale button[aria-pressed=true], .chip[aria-pressed=true] { background: #000 !important; color: #fff !important; box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .chip.alt::before { display: none; }
+  .scale button { min-height: 32px; border: 1px solid #000; background: #fff; color: #000; }
+  .scale button[aria-pressed=true] { background: #000 !important; color: #fff !important; box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   main { padding-bottom: 0; }
   #view-saved, #view-review, #view-setup { display: none !important; }
 }
@@ -665,12 +656,12 @@ const ANCHORS = {
  * Areas and tags are still drafts for the coaches to agree. */
 const SECTIONS = [
   { key: 'decisions',   title: 'Decision-making accuracy', short: 'Decisions',   sub: 'Foul play, breakdown / tackle, restarts', cards: true, tags: ['High tackle called correctly', 'Card issued without delay', 'Tackler released immediately', 'Jackler stayed on feet to contest', 'Correct free kick for a restart infringement'] },
-  { key: 'positioning', title: 'Referee positioning',      short: 'Positioning', sub: 'Ball in line / squaring the field', contest: true, tags: ['Stayed in line with the ball', 'Squared the field well', 'Fell behind play', 'Close enough to confirm the try'] },
+  { key: 'positioning', title: 'Referee positioning',      short: 'Positioning', sub: 'Ball in line / squaring the field', tags: ['Stayed in line with the ball', 'Squared the field well', 'Fell behind play', 'Close enough to confirm the try'] },
   { key: 'awareness',   title: 'Game feel & awareness',    short: 'Awareness',   sub: 'Game awareness, game management, communication', tags: ['Read the play early', 'Calm at key moments', 'Zero tolerance on time wasting', 'Clear voice, strong whistle'] },
   { key: 'rating',      title: 'Rating score',             short: 'Rating',      rating: true, whistle: true, tags: [] }
 ];
 const AREAS = SECTIONS.filter(s => !s.rating);
-const COMMENT_KEYS = [...SECTIONS.map(s => s.key), 'contest'];
+const COMMENT_KEYS = SECTIONS.map(s => s.key);
 const ROLES = ['Referee', 'Assistant referee 1', 'Assistant referee 2'];
 const DEFAULT_LEVELS = ['Pool play', 'Cup', 'Plate', 'Bowl', 'Final'];
 
@@ -762,20 +753,20 @@ function blank(opts = {}) {
   return {
     id: uid(), coach, tournament, union: carry.union || '', level: carry.level || '', game: opts.sameGame ? (carry.game || '') : nextGame(carry.game),
     role: carry.role || 'Referee', referee: '', field: '', time: '', date: today(),
-    scores: {}, comments: {}, voice: {}, tooClose: false, inWay: false, goodPos: false, keep: '', work: '', priv: '',
+    scores: {}, comments: {}, voice: {}, keep: '', work: '', priv: '',
     created: Date.now(), updated: Date.now(), uploadedAt: 0, uploadedVersion: 0
   };
 }
 function normalise(f) {
   f.tournament ??= ''; f.union ??= ''; f.game ??= ''; f.level ??= ''; f.role ||= 'Referee';
-  f.goodPos ??= false; f.keep ??= ''; f.work ??= ''; f.priv ??= '';
+  f.keep ??= ''; f.work ??= ''; f.priv ??= '';
   f.uploadedAt ??= 0; f.uploadedVersion ??= 0; f.scores ??= {}; f.comments ??= {}; f.voice ??= {};
   return f;
 }
 function isEmpty(f) {
   return !f.referee.trim() && !f.field.trim() && !f.time && !(f.game || '').trim() &&
     !Object.keys(f.scores).length && !Object.values(f.comments).some(v => String(v).trim()) &&
-    !Object.keys(f.voice || {}).length && !f.tooClose && !f.inWay && !f.goodPos && !(f.keep || '').trim() && !(f.work || '').trim() && !(f.priv || '').trim();
+    !Object.keys(f.voice || {}).length && !(f.keep || '').trim() && !(f.work || '').trim() && !(f.priv || '').trim();
 }
 
 let forms = read(LS_FORMS, []);
@@ -800,17 +791,6 @@ $('#sections').innerHTML = SECTIONS.map(s => {
     <p class="anchor" data-anchor="${s.key}" hidden></p>
     ${s.tags.length ? `<div class="qt" role="group" aria-label="Quick notes: ${s.title}">${s.tags.map((t, i) => `<button type="button" data-tag="${s.key}" data-i="${i}">${esc(t)}</button>`).join('')}</div>` : ''}
     <textarea data-c="${s.key}" rows="2" placeholder="Comments" aria-label="Comments: ${s.title}"></textarea>
-    ${s.contest ? `
-    <div class="contest">
-      <h3>Distance from contest</h3>
-      <div class="chips" role="group" aria-label="Distance from contest">
-        <button type="button" class="chip" data-flag="tooClose" aria-pressed="false">Too close</button>
-        <button type="button" class="chip" data-flag="inWay" aria-pressed="false">In the way</button>
-        <button type="button" class="chip alt" data-flag="goodPos" aria-pressed="false">Good position</button>
-      </div>
-      <p class="sub">Too close and in the way can both apply. Good position clears them.</p>
-      <textarea data-c="contest" rows="2" placeholder="Comments" aria-label="Comments: Distance from contest"></textarea>
-    </div>` : ''}
   </section>`;
 }).join('');
 
@@ -838,9 +818,6 @@ function refreshScores() {
     p.textContent = v ? `${v}. ${ANCHORS[v]}` : '';
   });
 }
-function refreshFlags() {
-  $$('[data-flag]').forEach(b => b.setAttribute('aria-pressed', String(!!cur[b.dataset.flag])));
-}
 function moreSummary() {
   const bits = [cur.union.trim(), cur.tournament.trim(), cur.level.trim(), cur.game.trim(), fmtDate(cur.date, false)].filter(Boolean);
   $('#more-sum').textContent = bits.join(', ');
@@ -849,7 +826,6 @@ function fillForm() {
   $$('[data-f]').forEach(el => { el.value = cur[el.dataset.f] || (el.dataset.f === 'role' ? 'Referee' : ''); });
   $$('[data-c]').forEach(el => { el.value = cur.comments[el.dataset.c] || ''; });
   refreshScores();
-  refreshFlags();
   $('#ref-hint').hidden = true;
   moreSummary();
   autosizeAll();
@@ -953,12 +929,6 @@ $('#view-form').addEventListener('click', (e) => {
     const v = Number(b.dataset.v);
     if (cur.scores[b.dataset.k] === v) delete cur.scores[b.dataset.k]; else cur.scores[b.dataset.k] = v;
     refreshScores();
-    queueSave();
-  } else if (b.dataset.flag) {
-    const f = b.dataset.flag, on = !cur[f];
-    cur[f] = on;
-    if (on) { if (f === 'goodPos') { cur.tooClose = false; cur.inWay = false; } else cur.goodPos = false; }
-    refreshFlags();
     queueSave();
   } else if (b.dataset.tag) {
     const s = SECTIONS.find(x => x.key === b.dataset.tag), text = s.tags[Number(b.dataset.i)];
@@ -1110,14 +1080,6 @@ function summary(f) {
     L.push(`${s.title}${s.sub ? ' (' + s.sub + ')' : ''}: ${f.scores[s.key] || '-'}/5`);
     const c = (f.comments[s.key] || '').trim();
     if (c) L.push('  ' + c.replace(/\n/g, '\n  '));
-    if (s.contest) {
-      const flags = [f.tooClose && 'Too close', f.inWay && 'In the way', f.goodPos && 'Good position'].filter(Boolean);
-      const n = (f.comments.contest || '').trim();
-      if (flags.length || n) {
-        L.push('  Distance from contest: ' + (flags.join(', ') || '-'));
-        if (n) L.push('  ' + n.replace(/\n/g, '\n  '));
-      }
-    }
   }
   if ((f.keep || '').trim() || (f.work || '').trim()) {
     L.push('');
@@ -1129,18 +1091,12 @@ function summary(f) {
 const csvCell = (v) => { v = String(v ?? ''); return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
 function toCSV(list) {
   const head = ['Date', 'Time', 'Union', 'Tournament', 'Level', 'Game', 'Field', 'Referee', 'Role', 'Coach'];
-  for (const s of SECTIONS) {
-    head.push(s.title + ' score', s.title + ' comments');
-    if (s.contest) head.push('Too close', 'In the way', 'Good position', 'Distance from contest comments');
-  }
+  for (const s of SECTIONS) head.push(s.title + ' score', s.title + ' comments');
   head.push('Strength to keep', 'One thing to work on', 'Private notes');
   const rows = [head];
   for (const f of list) {
     const r = [f.date, f.time, f.union, f.tournament, f.level, f.game, f.field, f.referee, f.role, f.coach];
-    for (const s of SECTIONS) {
-      r.push(f.scores[s.key] || '', f.comments[s.key] || '');
-      if (s.contest) r.push(f.tooClose ? 'Yes' : '', f.inWay ? 'Yes' : '', f.goodPos ? 'Yes' : '', f.comments.contest || '');
-    }
+    for (const s of SECTIONS) r.push(f.scores[s.key] || '', f.comments[s.key] || '');
     r.push(f.keep, f.work, f.priv);
     rows.push(r);
   }
@@ -1198,7 +1154,7 @@ function sanitize(r) {
     union: str(r.union), tournament: str(r.tournament), level: str(r.level), game: str(r.game), role: str(r.role) || 'Referee',
     uploadedAt: Number(r.uploadedAt) || 0, uploadedVersion: Number(r.uploadedVersion) || 0,
     time: str(r.time), date: str(r.date), scores, comments,
-    voice: {}, tooClose: !!r.tooClose, inWay: !!r.inWay, goodPos: !!r.goodPos, keep: str(r.keep), work: str(r.work), priv: str(r.priv),
+    voice: {}, keep: str(r.keep), work: str(r.work), priv: str(r.priv),
     created: Number(r.created) || Date.now(), updated: Number(r.updated) || Date.now()
   };
 }
@@ -1407,7 +1363,7 @@ const SUPPORT_EMAIL = 'Support@simplesolutions.co.nz';
 
 const UP_FIELDS = ['form_id', 'version', 'code', 'union', 'tournament', 'level', 'game', 'date', 'time', 'field', 'referee', 'role', 'coach',
   ...SECTIONS.flatMap(s => ['score_' + s.key, 'comment_' + s.key]),
-  'too_close', 'in_the_way', 'good_position', 'contest_comments', 'keep', 'work', 'private_notes'];
+  'keep', 'work', 'private_notes'];
 
 function payload(f) {
   const p = {
@@ -1418,10 +1374,6 @@ function payload(f) {
     p['score_' + s.key] = f.scores[s.key] || '';
     p['comment_' + s.key] = (f.comments[s.key] || '').trim();
   }
-  p.too_close = f.tooClose ? 'yes' : '';
-  p.in_the_way = f.inWay ? 'yes' : '';
-  p.good_position = f.goodPos ? 'yes' : '';
-  p.contest_comments = (f.comments.contest || '').trim();
   p.keep = (f.keep || '').trim();
   p.work = (f.work || '').trim();
   p.private_notes = (f.priv || '').trim();
@@ -1557,7 +1509,7 @@ function collect() {
   for (const u of use) {
     const f = u.f;
     let g = map.get(u.k);
-    if (!g) { g = { key: u.k, name: f.referee.trim(), names: new Map(), games: [], sum: {}, cnt: {}, adjSum: 0, adjCnt: 0, coaches: new Set(), tooClose: 0, inWay: 0, goodPos: 0, last: '' }; map.set(u.k, g); }
+    if (!g) { g = { key: u.k, name: f.referee.trim(), names: new Map(), games: [], sum: {}, cnt: {}, adjSum: 0, adjCnt: 0, coaches: new Set(), last: '' }; map.set(u.k, g); }
     g.games.push(f);
     g.names.set(u.k0, f.referee.trim());
     for (const s of SECTIONS) {
@@ -1570,9 +1522,6 @@ function collect() {
       g.adjCnt++;
     }
     if (f.coach.trim()) g.coaches.add(refKey(f.coach));
-    if (f.tooClose) g.tooClose++;
-    if (f.inWay) g.inWay++;
-    if (f.goodPos) g.goodPos++;
     if ((f.date || '') >= g.last) { g.last = f.date || ''; g.name = f.referee.trim(); }
   }
   const rows = [...map.values()];
@@ -1711,29 +1660,22 @@ function renderDetail() {
   box.hidden = false;
   const games = [...g.games].sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.time || '').localeCompare(a.time || ''));
   const n = games.length;
-  const flags = [];
-  if (g.tooClose) flags.push(`Too close in ${g.tooClose} of ${n} game${n > 1 ? 's' : ''}.`);
-  if (g.inWay) flags.push(`In the way in ${g.inWay} of ${n} game${n > 1 ? 's' : ''}.`);
-  if (g.goodPos) flags.push(`Good position in ${g.goodPos} of ${n} game${n > 1 ? 's' : ''}.`);
   box.innerHTML = `
     <button type="button" class="back" data-back>&larr; Back to table</button>
     <h1>${esc(g.name)}</h1>
-    <p class="note">${n} game${n > 1 ? 's' : ''}, ${g.coaches.size} coach${g.coaches.size === 1 ? '' : 'es'}. Average rating ${one(g.avg.rating)}${g.rank ? ', rank ' + g.rank : g.prov ? ', provisional' : ''}. ${esc(flags.join(' '))}</p>
+    <p class="note">${n} game${n > 1 ? 's' : ''}, ${g.coaches.size} coach${g.coaches.size === 1 ? '' : 'es'}. Average rating ${one(g.avg.rating)}${g.rank ? ', rank ' + g.rank : g.prov ? ', provisional' : ''}.</p>
     ${games.map(f => {
       const bits = [f.level ? esc(f.level) : '', f.game ? esc(f.game) : '', f.field ? 'Field ' + esc(f.field) : '', fmtTime(f.time) ? esc(fmtTime(f.time)) : ''].filter(Boolean).join(', ');
       const comments = SECTIONS.map(s => {
         const c = (f.comments[s.key] || '').trim();
         return c ? `<p class="cm"><strong>${s.short}:</strong> ${esc(c)}</p>` : '';
       }).join('');
-      const cf = [f.tooClose && 'Too close', f.inWay && 'In the way', f.goodPos && 'Good position'].filter(Boolean).join(', ');
-      const cn = (f.comments.contest || '').trim();
-      const contest = (cf || cn) ? `<p class="cm"><strong>Distance from contest:</strong> ${esc(cf || '–')}${cn ? '. ' + esc(cn) : ''}</p>` : '';
       const fb = `${(f.keep || '').trim() ? `<p class="cm"><strong>Strength to keep:</strong> ${esc(f.keep.trim())}</p>` : ''}${(f.work || '').trim() ? `<p class="cm"><strong>One thing to work on:</strong> ${esc(f.work.trim())}</p>` : ''}${(f.priv || '').trim() ? `<p class="cm"><strong>Private note:</strong> ${esc(f.priv.trim())}</p>` : ''}`;
       return `<article class="game">
         <h2>${esc(fmtDate(f.date))}${bits ? ', ' + bits : ''}</h2>
         <p class="by">${f.coach ? 'Coach: ' + esc(f.coach) : 'No coach name'}${f.role && f.role !== 'Referee' ? ', ' + esc(f.role) : ''}</p>
         <div class="sg">${SECTIONS.map(s => `<div>${s.short}<b>${f.scores[s.key] || '–'}</b></div>`).join('')}</div>
-        ${comments}${contest}${fb}
+        ${comments}${fb}
         <button type="button" class="btn" data-open="${esc(f.id)}">Open this form</button>
       </article>`;
     }).join('')}`;
@@ -1795,12 +1737,11 @@ function exportRanking() {
   const D = collect();
   if (!D.rows.length) { toast('No referees to export yet'); return; }
   const list = [...D.rows].sort((a, b) => (a.rank ?? 1e9) - (b.rank ?? 1e9) || a.name.localeCompare(b.name));
-  const head = ['Rank', 'Referee', 'Games', 'Coaches', 'Provisional', 'Rating average', 'Adjusted rating', ...AREAS.map(s => s.short + ' average'), 'Too close (games)', 'In the way (games)', 'Good position (games)'];
+  const head = ['Rank', 'Referee', 'Games', 'Coaches', 'Provisional', 'Rating average', 'Adjusted rating', ...AREAS.map(s => s.short + ' average')];
   const out = [head, ...list.map(g => [
     g.rank ?? '', g.name, g.games.length, g.coaches.size, g.prov ? 'Yes' : '',
     g.avg.rating == null ? '' : Math.round(g.avg.rating * 100) / 100, g.adj == null ? '' : Math.round(g.adj * 100) / 100,
-    ...AREAS.map(s => g.avg[s.key] == null ? '' : Math.round(g.avg[s.key] * 100) / 100),
-    g.tooClose, g.inWay, g.goodPos
+    ...AREAS.map(s => g.avg[s.key] == null ? '' : Math.round(g.avg[s.key] * 100) / 100)
   ])];
   const csv = '\ufeff' + out.map(r => r.map(csvCell).join(',')).join('\r\n');
   download(`sevens-referee-ranking-${today()}.csv`, 'text/csv;charset=utf-8', csv);
@@ -1846,13 +1787,10 @@ function fromFlat(r) {
     const c = g('comment_' + s.key);
     if (c) comments[s.key] = c;
   }
-  const cc = g('contest_comments');
-  if (cc) comments.contest = cc;
-  const yes = (v) => /^(yes|true|1|y)$/i.test(String(v ?? '').trim());
   const ver = Number(g('version')) || Date.parse(g('created_at')) || Date.now();
   const rec = {
     coach: g('coach'), union: g('union'), tournament: g('tournament'), level: g('level'), game: g('game'), referee, role: g('role') || 'Referee', field: g('field'),
-    time: g('time'), date: g('date'), scores, comments, tooClose: yes(r.too_close), inWay: yes(r.in_the_way), goodPos: yes(r.good_position),
+    time: g('time'), date: g('date'), scores, comments,
     keep: g('keep'), work: g('work'), priv: g('private_notes')
   };
   const id = g('form_id') || 'imp-' + hashStr(JSON.stringify(rec));
@@ -2077,8 +2015,8 @@ function removeDemo() {
 
 /* ---------- Voice notes ---------- */
 const VN_MAX = 120;
-const VN_SLOTS = [...SECTIONS.map(s => s.key), 'contest', 'keep', 'work', 'priv'];
-const VN_LABEL = Object.fromEntries([...SECTIONS.map(s => [s.key, s.title]), ['contest', 'Distance from contest'], ['keep', 'Strength to keep'], ['work', 'One thing to work on'], ['priv', 'Private notes']]);
+const VN_SLOTS = [...SECTIONS.map(s => s.key), 'keep', 'work', 'priv'];
+const VN_LABEL = Object.fromEntries([...SECTIONS.map(s => [s.key, s.title]), ['keep', 'Strength to keep'], ['work', 'One thing to work on'], ['priv', 'Private notes']]);
 const MIC = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 15a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 0 0-7 0v5.5A3.5 3.5 0 0 0 12 15z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 11.5a6 6 0 0 0 12 0M12 17.5V21M9 21h6"/></svg>';
 const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>';
 const WAVE = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M4 10v4M8 6.5v11M12 3.5v17M16 7.5v9M20 10v4"/></svg>';
