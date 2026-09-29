@@ -106,11 +106,12 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .jersey .number { margin: -18px 0 0; font: 800 176px/.8 var(--display); letter-spacing: -.01em; }
 .jersey .sub { margin: 14px 0 0; font-size: 15px; color: #C5CBD0; letter-spacing: .04em; }
 .jersey .sub::before, .jersey .sub::after { content: ""; display: inline-block; width: 28px; height: 3px; margin: 0 10px 4px; background: var(--jersey2); }
-.band { display: flex; align-items: center; gap: 12px; padding: 6px 16px 12px; background: var(--jersey); color: #fff; }
+.band { display: flex; align-items: center; gap: 12px; padding: 6px 16px 12px; background: var(--jersey); color: #fff;
+  position: sticky; top: calc(48px + env(safe-area-inset-top)); z-index: 4; }
 .band .crest { flex: none; width: 40px; height: 40px; object-fit: contain; border-radius: 4px; }
 .band .num { flex: none; font: 800 66px/.8 var(--display); }
 .band .txt { flex: 1; min-width: 0; }
-.band .ttl { margin: 0; font: 800 26px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
+.band .ttl { margin: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 800 26px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
 .band #status { margin: 4px 0 0; font-size: 13px; color: #C5CBD0; }
 
 main { max-width: 1200px; margin: 0 auto; padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
@@ -250,7 +251,8 @@ body[data-dict=off] .dcbtn { display: none; }
 #qr-svg { width: 100%; display: flex; justify-content: center; }
 .qr svg { width: 100%; max-width: 300px; height: auto; background: #fff; padding: 6px; border-radius: 6px; border: 2px solid #000; }
 .qr input { text-align: left; }
-.set-block { margin: 0 0 24px; }
+.set-block { margin: 0 0 24px; padding-top: 20px; border-top: 2px solid var(--line); }
+.set-block:first-child { padding-top: 0; border-top: 0; }
 .stack { display: grid; gap: 12px; }
 
 /* Toast and scanner */
@@ -274,7 +276,7 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
 .rv th[aria-sort=descending] button::after { content: " \25BC"; font-size: 10px; }
 .rk { display: inline-grid; place-items: center; min-width: 32px; height: 32px; margin-right: 10px; border-radius: 6px; background: var(--sel-bg); color: var(--sel-ink); font: 800 21px/1 var(--display); }
 .rk.none { background: transparent; border: 2px solid var(--edge); color: var(--muted); }
-.rv .who { min-height: 46px; padding: 0; border: 0; background: none; font: 700 19px var(--body); text-align: left; text-decoration: underline; text-decoration-color: var(--silver); text-underline-offset: 4px; }
+.rv .who { min-height: 46px; padding: 0; border: 0; background: none; font: 700 22px var(--display); letter-spacing: .01em; text-align: left; text-decoration: underline; text-decoration-color: var(--jersey2); text-underline-offset: 4px; }
 .pv { margin-left: 8px; font-size: 13px; color: var(--muted); }
 .rv tr.prov td, .rv tr.prov th.nm { color: var(--muted); }
 .rv .sc { font: 700 20px var(--display); font-variant-numeric: tabular-nums; }
@@ -288,8 +290,8 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
   table.rv { display: block; width: 100%; min-width: 0; }
   table.rv thead { display: none; }
   table.rv tbody { display: block; }
-  table.rv tr { display: block; margin-bottom: 12px; border: var(--bw) solid var(--ink); border-radius: 6px; background: var(--paper); }
-  table.rv th.nm { display: flex; align-items: center; position: static; min-width: 0; box-shadow: none; padding: 12px; border-bottom: var(--bw) solid var(--ink); white-space: normal; }
+  table.rv tr { display: block; margin-bottom: 12px; border: var(--bw) solid var(--jersey); border-radius: 6px; background: var(--paper); }
+  table.rv th.nm { display: flex; align-items: center; position: static; min-width: 0; box-shadow: none; padding: 12px; background: var(--jersey-tint); border-bottom: var(--bw) solid var(--jersey); white-space: normal; }
   table.rv td { display: flex; justify-content: space-between; align-items: center; text-align: right; padding: 7px 12px; white-space: normal; }
   table.rv td::before { content: attr(data-label); font: 600 15px var(--body); color: var(--muted); text-align: left; }
 }
@@ -859,7 +861,9 @@ function fillForm() {
 }
 function updateStatus() {
   const n = SECTIONS.filter(s => cur.scores[s.key]).length;
-  $('#status').textContent = `${n} of ${SECTIONS.length} scored` + (lastSaved ? `, saved ${lastSaved}` : '');
+  const ctx = [cur.field.trim() ? 'Field ' + cur.field.trim() : '', fmtTime(cur.time)].filter(Boolean).join(', ');
+  $('#band .ttl').textContent = cur.referee.trim() || 'Coaching Sevens';
+  $('#status').textContent = (ctx ? ctx + ' — ' : '') + `${n} of ${SECTIONS.length} scored` + (lastSaved ? `, saved ${lastSaved}` : '');
   $('#tabs').style.setProperty('--p', (n / SECTIONS.length * 100) + '%');
   updateUploadUI();
 }
