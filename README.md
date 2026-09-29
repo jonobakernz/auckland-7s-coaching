@@ -7,6 +7,8 @@ It is a progressive web app: plain HTML, CSS and JavaScript, with no build step.
 (`worker/index.js`) stores results and feedback in a D1 database -- see "Results, feedback and the Worker" below.
 The app itself works offline.
 
+![Demo overview](docs/demo-overview.png)
+
 ## What it does
 
 **Coaches**
@@ -42,7 +44,7 @@ See [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for what changed in each rele
 | `lib/` | QR code maker and QR scanner. Loaded only when used. See `lib/LICENSES.txt` |
 | `demo/` | Made-up tournament data: `demo.json`, plus a CSV and a backup file for testing |
 | `tools/` | Scripts that make the demo data and the icons |
-| `docs/` | Release notes |
+| `docs/` | Release notes and the demo overview picture |
 | `.github/workflows/checks.yml` | Runs `node tools/check.js` on every pull request |
 | `.github/workflows/pages.yml`, `.github/pages-exclude.txt` | Deploys the static app to GitHub Pages on every push to `main` |
 | `worker/index.js` | The Cloudflare Worker: an API-only backend for the `/api/results` and `/api/feedback` routes (does not serve the app -- GitHub Pages does) |
