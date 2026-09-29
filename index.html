@@ -136,7 +136,9 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink); }
 /* Scored rows: each is fenced by a dashed 5 m line */
 .row { position: relative; padding: 20px 16px 18px; }
 .row::before { content: ""; position: absolute; top: 0; left: 16px; right: 16px; height: 3px; background: repeating-linear-gradient(90deg, var(--silver) 0 16px, transparent 16px 26px); }
-#sections .row:first-child::before { display: none; }
+#sections .row:first-child::before, .group-head + .row::before { display: none; }
+.group-head { margin: 28px 0 0; padding: 16px 16px 0; border-top: 4px solid var(--ink); font: 800 13px/1.2 var(--display); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+#sections .group-head:first-child { margin-top: 0; padding-top: 0; border-top: none; }
 .row-head { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; }
 .row-head h2 { display: flex; align-items: center; margin: 0; font: 800 26px/1.05 var(--display); letter-spacing: .01em; }
 .row-head p, .row .sub { margin: 0; font-size: 15px; color: var(--muted); }
@@ -306,6 +308,7 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
   .vnbtns, .vnbtn, .vnbar, .dcbar, .btn-new, .tabs, .actions, .toast, .brand p:not(.t), .intro, .legend, .jersey, .band, .row::before, .qt, .anchor, .row.priv, .hint { display: none !important; }
   .brand .t { color: #000; }
   .row { break-inside: avoid; padding: 8px 0; border-top: 1px solid #999; background: #fff !important; }
+  .group-head { margin-top: 14px; padding: 6px 0 0; border-top: 1px solid #000; color: #000; }
   .meta { padding: 10px 0; }
   .more { border: 0; margin: 0; }
   .more summary { display: none; }
@@ -660,14 +663,17 @@ const ANCHORS = {
   5: 'Outstanding for this level.'
 };
 
+/* The three groups below are Auckland Rugby Referees' "three key elements to refereeing sevens"
+ * (Decision-making accuracy / Referee positioning / Game feel and awareness) from the
+ * Sevens Priorities & Application session. Areas and tags are still drafts for the coaches to agree. */
 const SECTIONS = [
-  { key: 'fitness',       title: 'Fitness',                short: 'Fitness',       sub: 'Ball in line / speed', tags: ['Kept up with play', 'On the ball line', 'Fell behind play', 'Good recovery pace'] },
-  { key: 'foul',          title: 'Foul play',              short: 'Foul play',     cards: true, tags: ['Clear warning first', 'Consistent sanctions', 'Missed high tackle', 'Managed head contact well', 'Spotted foul play early', 'Applied the law correctly'] },
-  { key: 'breakdown',     title: 'Breakdowns / turnovers', short: 'Breakdowns',    tags: ['Clear tackle release call', 'Missed a hand in the ruck', 'Quick, clear turnover call', 'Late to see the ball', "Respected the jackler's rights", 'Ball made available quickly'] },
-  { key: 'setphase',      title: 'Set phase',              short: 'Set phase',     sub: 'Scrums / lineouts / KO / taps', tags: ['Quick, clean restarts', 'Slow to reset', 'Clear kick-off signals', 'Scrum managed well'] },
-  { key: 'awareness',     title: 'Game awareness',         short: 'Awareness',     contest: true, tags: ['Read the play early', 'Late to see offside', 'Good use of advantage', 'Lost sight of the ball'] },
-  { key: 'management',    title: 'Game management',        short: 'Management',    tags: ['Good clock and advantage use', 'Slow to manage players', 'Sin-bin handled clearly', 'Calm at key moments', 'Proactive, not just reactive'] },
-  { key: 'communication', title: 'Communication',          short: 'Communication', sub: 'Voice / whistle / signals', tags: ['Clear voice', 'Strong whistle', 'Signals were late', 'Calm with players'] },
+  { key: 'foul',          group: 'Decision-making accuracy', title: 'Foul play',              short: 'Foul play',     cards: true, tags: ['High tackle called correctly', 'Missed head contact', 'Correct penalty for a dangerous tackle', 'Card issued without delay', 'Consistent sanctions'] },
+  { key: 'breakdown',     group: 'Decision-making accuracy', title: 'Breakdowns / tackle',    short: 'Breakdowns',    tags: ['Tackler released immediately', 'Tackle assist showed clear daylight', 'Jackler stayed on feet to contest', 'Missed a hand in the ruck', 'Arriving players came through the gate', 'Ball made available quickly'] },
+  { key: 'setphase',      group: 'Decision-making accuracy', title: 'Restarts',               short: 'Restarts',      sub: 'Scrum / lineout / kick offs / 22m / penalties', tags: ['Correct free kick for a restart infringement', 'Kept to the 30-second kick clock', 'Scrum decision made, no reset', 'Lineout formed within 15 seconds', 'Quick tap allowed correctly'] },
+  { key: 'fitness',       group: 'Referee positioning',      title: 'Positioning & fitness',  short: 'Positioning',   sub: 'Ball in line / squaring the field', contest: true, tags: ['Stayed in line with the ball', 'Squared the field well', 'Fell behind play', 'Good recovery pace', 'Close enough to confirm the try'] },
+  { key: 'awareness',     group: 'Game feel & awareness',    title: 'Game awareness',         short: 'Awareness',     tags: ['Read the play early', 'Good use of advantage', 'Missed offside', 'Blew the whistle too early', 'Let advantage play out well'] },
+  { key: 'management',    group: 'Game feel & awareness',    title: 'Game management',        short: 'Management',    tags: ['Calm at key moments', 'Sin bin handled clearly', 'Zero tolerance on time wasting', 'Proactive, not just reactive', 'Score agreed before leaving the field'] },
+  { key: 'communication', group: 'Game feel & awareness',    title: 'Communication',          short: 'Communication', sub: 'Voice / whistle / signals', tags: ['Clear voice', 'Strong whistle', 'Signals were late', 'Calm with players'] },
   { key: 'rating',        title: 'Rating score',           short: 'Rating',        rating: true, whistle: true, tags: [] }
 ];
 const AREAS = SECTIONS.filter(s => !s.rating);
@@ -788,7 +794,11 @@ let timer = null, dirty = false, upBusy = false, lastSaved = '';
 /* ---------- Build the score rows ---------- */
 const WHISTLE = '<svg class="whistle" viewBox="0 0 40 28" aria-hidden="true" focusable="false"><path fill="currentColor" d="M1 11h15l3-4h11a9 9 0 0 1 0 18h-1a9 9 0 0 1-8.6-6.4H1z"/><circle cx="29" cy="16" r="3.2" fill="var(--paper)"/><rect x="20" y="2" width="6" height="4" rx="1" fill="currentColor"/></svg>';
 $('#legend-list').innerHTML = [1, 2, 3, 4, 5].map(n => `<li>${esc(ANCHORS[n])}</li>`).join('');
-$('#sections').innerHTML = SECTIONS.map(s => `
+let lastGroup = null;
+$('#sections').innerHTML = SECTIONS.map(s => {
+  const groupHead = s.group && s.group !== lastGroup ? `<h2 class="group-head">${esc(s.group)}</h2>` : '';
+  lastGroup = s.group || lastGroup;
+  return `${groupHead}
   <section class="row${s.rating ? ' rating' : ''}" data-key="${s.key}">
     <div class="row-head">
       <h2 id="h-${s.key}">${s.title}${s.cards ? '<span class="cards" aria-hidden="true"><i></i><i></i></span>' : ''}${s.whistle ? WHISTLE : ''}</h2>
@@ -811,7 +821,8 @@ $('#sections').innerHTML = SECTIONS.map(s => `
       <p class="sub">Too close and in the way can both apply. Good position clears them.</p>
       <textarea data-c="contest" rows="2" placeholder="Comments" aria-label="Comments: Distance from contest"></textarea>
     </div>` : ''}
-  </section>`).join('');
+  </section>`;
+}).join('');
 
 /* ---------- Lists from the setup ---------- */
 function fillLists() {
