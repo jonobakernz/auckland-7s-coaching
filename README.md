@@ -63,20 +63,17 @@ Cloudflare account access is needed just to test).
 
 ## Deploy
 
-The site is hosted on **Cloudflare** (a Worker with static assets): <https://coach7srefs.nz>. Cloudflare's own
-GitHub integration deploys automatically a short time after every push to `main` -- no workflow or secret is
-needed in this repo for it. Merging a pull request to `main` is what puts a change live, so treat every merge as
-a release.
+**This project is separate from `sevens-coaching-form`**, the project it was copied from, and must stay separate.
+Hosting is not connected yet, deliberately -- see `CLAUDE.md` for the one-off Cloudflare/D1 setup steps. Once it
+is, this project will run on its own **Cloudflare** Worker with static assets, on its own domain. **Never point
+it at `coach7srefs.nz`, or at any other Worker, D1 database, secret or domain belonging to the original
+`sevens-coaching-form` project.** Cloudflare's own GitHub integration will deploy automatically a short time
+after every push to `main` once it is connected -- no workflow or secret is needed in this repo for it. Merging a
+pull request to `main` is what puts a change live, so treat every merge as a release.
 
-Two earlier addresses are retired. Do not use or link either of them:
-
-- `https://jonobakernz.github.io/sevens-coaching-form/` -- GitHub Pages. Now returns 404: Pages does not work on a
-  private repository on the Free plan, and the repo is private again (see below).
-- `https://easy-goingcrow.staticdomains.app/` -- static.app, the original host. The GitHub Actions workflow that
-  used to deploy there has been removed, so this address is now frozen at whatever it last had (release 21's code,
-  from before the CSP problem was even diagnosed) and will never update again. static.app itself also sends a
-  security header that silently blocks results and feedback from reaching SnapItForms, so it never worked properly
-  regardless.
+The GitHub Pages and static.app history you may see referenced in `sevens-coaching-form`'s own docs is that
+project's history, from before this repo was copied. It never applied here: this repo has never deployed anywhere
+but is not yet connected to Cloudflare.
 
 Phones cache the app for offline use, so a release does not reach everyone straight away. `sw.js` refreshes its
 cached files in the background each time the app opens; once a phone has the new files, it picks them up after
@@ -85,9 +82,7 @@ does this automatically.
 
 ## Repo privacy
 
-**This repo is private.** It was made public for a period (releases 22 to 24) purely because GitHub Pages does not
-support private repositories on the Free plan; moving to Cloudflare removed that restriction, so it went back to
-private. If it is ever made public again for any reason, the same care applies as before:
+**This repo is private.** If it is ever made public for any reason, the same care applies as before:
 
 - No real coaching data, referee names, or coach names should ever go into this repo. Real results and feedback
   live in the D1 database. The repo should only ever hold fictional demo data (see `demo/`).
@@ -111,9 +106,10 @@ form backend used briefly as a trial (Sept 2026) with no independent track recor
 - `GET /api/results?key=...` (CSV by default, `&format=json` for JSON) and `GET /api/feedback?key=...` are the
   organiser-only export, gated by `ADMIN_KEY` -- a real secret, set once with `wrangler secret put ADMIN_KEY` and
   never written to a file.
-- One-off setup for a new environment: `wrangler d1 create sevens_results`, paste the database ID it prints into
-  `wrangler.toml`, run `wrangler d1 execute sevens_results --remote --file=migrations/0001_init.sql`, then
-  `wrangler secret put UPLOAD_KEY` and `wrangler secret put ADMIN_KEY`.
+- One-off setup for a new environment: `wrangler d1 create auckland_7s_results`, paste the database ID it prints
+  into `wrangler.toml`, run `wrangler d1 execute auckland_7s_results --remote --file=migrations/0001_init.sql`,
+  then `wrangler secret put UPLOAD_KEY` and `wrangler secret put ADMIN_KEY`. Use a fresh Worker and database for
+  this project -- never the original `sevens-coaching-form` project's.
 - If a submission fails for a reason other than "no signal" (the Worker down, a rejected key), the coach sees a
   generic failure message. Either way the form or the feedback text stays on the phone until it sends -- nothing
   is lost.
