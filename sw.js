@@ -8,6 +8,7 @@ const ASSETS = [
   'icons/icon-512.png',
   'icons/icon-maskable-512.png',
   'icons/apple-touch-icon.png',
+  'icons/arra-crest.png',
   'fonts/oswald-latin-600-700.woff2',
   'fonts/oswald-latin-ext-600-700.woff2',
   'fonts/source-sans-3-latin-400-600.woff2',
