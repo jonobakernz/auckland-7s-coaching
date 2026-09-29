@@ -12,11 +12,11 @@ The app itself works offline.
 ## What it does
 
 **Coaches**
-- Score 8 areas from 1 to 5, grouped under Auckland Rugby Referees' three key elements to refereeing sevens: decision-making accuracy (foul play, breakdowns / tackle, restarts), referee positioning (positioning & fitness), and game feel & awareness (game awareness, game management, communication) -- plus an overall rating.
+- Score 3 areas from 1 to 5 -- Auckland Rugby Referees' three key elements to refereeing sevens: decision-making accuracy (foul play, breakdowns / tackle, restarts), referee positioning (ball in line, squaring the field, distance from contest), and game feel & awareness (game awareness, game management, communication) -- plus an overall rating.
 - Tap quick notes, add comments, and write "Strength to keep" and "One thing to work on".
 - Write private notes that are left out of the summary, email and print.
 - Dictate into any comment box: tap the microphone and speak, and the words are typed in. Say "full stop", "comma", "question mark" or "new line" for punctuation.
-- Record a voice note in any comment box (the 8 areas, distance from contest, the two feedback boxes and private notes). Play it back, record again, delete it, or share it.
+- Record a voice note in any comment box (the 3 areas, distance from contest, the two feedback boxes and private notes). Play it back, record again, delete it, or share it.
 - Save on the device, upload with one tap, email or share a summary, print or save a PDF.
 - Work offline. Forms wait on the phone until there is signal.
 - Send feedback about the app from Setup, straight to the organiser.
