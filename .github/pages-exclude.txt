@@ -1,0 +1,10 @@
+.git/
+.github/
+worker/
+migrations/
+wrangler.toml
+tools/
+docs/
+CLAUDE.md
+README.md
+.gitignore

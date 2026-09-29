@@ -1,6 +1,6 @@
 # Sevens Coaching Form: release notes
 
-Updated 29 Sept 2026. Current release: 30.
+Updated 29 Sept 2026. Current release: 31.
 
 **This file was inherited from `sevens-coaching-form`, the project this repo (`auckland-7s-coaching`) was copied
 from.** Releases 1 to 29 document that project's own history -- including its domain (`coach7srefs.nz`), its
@@ -16,11 +16,16 @@ It is a phone app. Coaches use it to score referees. Organisers use it to rank t
 phone saves it, and the coach uploads it. The app works without signal. An organiser sets up a tournament with
 one QR code and reviews every referee in one table.
 
-**Hosting is not connected yet.** The code is ready to upload results and feedback to a Cloudflare Worker and D1
-database (`worker/index.js`), but no Worker, domain or database has been set up for this project -- see the
-Support reference below and the one-off setup steps in `CLAUDE.md` and the README. Until that is done, uploads
-and feedback will report "offline" or fail, by design (`node tools/check.js` deliberately fails on the
-placeholder `UPLOAD_KEY`).
+**The front end is hosted on GitHub Pages**, at <https://jonobakernz.github.io/auckland-7s-coaching/> -- deploying
+automatically on every push to `main` (`.github/workflows/pages.yml`). This is a deliberate, different choice from
+the original project, which moved away from Pages; it means this repo is public, since GitHub Pages on the Free
+plan only serves public repos.
+
+**Cloudflare hosting for results and feedback is not connected yet.** The code is ready to upload results and
+feedback to a separate, API-only Cloudflare Worker and D1 database (`worker/index.js`), but no Worker or database
+has been created for this project -- see the Support reference below and the one-off setup steps in `CLAUDE.md`
+and the README. Until that is done, uploads and feedback will report "offline" or fail, by design
+(`node tools/check.js` deliberately fails on the placeholder `UPLOAD_KEY` and `API_BASE`).
 
 Main changes since the first release:
 
@@ -118,10 +123,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 30 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 31 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 29 Sept 2026 | 31. Hosting: GitHub Pages for the app, a separate Cloudflare Worker for results and feedback | A deliberate, different choice from `sevens-coaching-form`: the front end deploys to GitHub Pages (`.github/workflows/pages.yml`) instead of a Cloudflare Worker with static assets, which makes this repo public (GitHub Pages on the Free plan only serves public repos). `worker/index.js` is now API-only (no `[assets]` binding, no help-subdomain routing) and sends CORS headers, since GitHub Pages and the Worker are different origins. `index.html`'s `RESULTS_ENDPOINT` / `FEEDBACK_ENDPOINT` changed from same-origin paths to full URLs built from a new `API_BASE` constant, set once the Worker is deployed. No scoring, fields or layout changed. | The app is reachable at jonobakernz.github.io/auckland-7s-coaching. Uploads still say "not set up yet" until both `API_BASE` and `UPLOAD_KEY` are set. |
 | 29 Sept 2026 | 30. Auckland Rugby Referees colours | The jersey theme (header, tabs, primary buttons, selected states, review table headers) changed from near-black to Auckland Rugby Referees' navy (`#0E234B`), matching their site at arra.org.nz. The gold used for the yellow-card accent was already close to ARRA's gold and is unchanged. The app icon and browser theme colour were regenerated to match. No fields, scoring or layout changed. | The header, tab bar and primary buttons are navy blue instead of near-black. |
 | 29 Sept 2026 | 29. Areas regrouped under Auckland Rugby Referees' three coaching priorities | The 7 scored areas are unchanged, but now sit under three group headings from Auckland Rugby Referees' "Sevens Priorities & Application" session: Decision-making accuracy (Foul play, Breakdowns / tackle, Restarts -- renamed from Set phase), Referee positioning (Positioning & fitness -- renamed from Fitness, now also holding the distance-from-contest chips, moved off Game awareness), and Game feel & awareness (Game awareness, Game management, Communication). Quick-note tags were refreshed with wording from that session (e.g. "Jackler stayed on feet to contest", "Kept to the 30-second kick clock"). `UP_FIELDS` order changed to match (`node tools/check.js --update-fields` run) -- field names themselves did not change. | Three bold section headings (Decision-making accuracy / Referee positioning / Game feel & awareness) above the score rows. Distance from contest now sits under Positioning & fitness, not Game awareness. |
 | 27 Sept 2026 | 28. Provincial union field in Match details | A new "Union" dropdown sits above Tournament under "Match details", listing the 24 New Zealand provincial unions. It carries over between forms like tournament and level do. Added to `UP_FIELDS` (`node tools/check.js --update-fields` run), so it uploads and exports alongside the other match details. | A "Union" dropdown above Tournament under "Match details". |
@@ -212,7 +218,7 @@ Most problems come from signal, permissions, or the way iPhone stores data. A fo
 | "Load results file" skips rows | The tournament code is wrong or missing. | Check the code in Setup. The message shows how many rows were skipped. |
 | A referee is missing from the ranking | Too few games, or a filter hides them. | Lower "Minimum games". Set Role to the right role. Clear the tournament and date filters. |
 | The same referee shows twice | Two spellings of one name. | Under "Names", tap "Merge". |
-| The page shows "404" just after a release | Cloudflare needs a minute or two to publish after a merge to `main`. | Wait and reload. |
+| The page shows "404" just after a release | GitHub Pages needs a minute or two to publish after a merge to `main`. | Wait and reload. |
 | The date box shows the month first | The date box follows the phone's language setting. | Set the phone's region to New Zealand. |
 | Demo forms appear on a real phone | Someone loaded the demo. | Setup, then "Demo and training", then "Remove the demo data". Real forms stay. |
 
@@ -267,11 +273,13 @@ The app has not been tested on real phones yet. Everything below is either a des
 
 | Item | Detail |
 | --- | --- |
-| Live address | None yet. Hosting is not connected for this project -- do not give coaches `coach7srefs.nz` or any other address; that belongs to `sevens-coaching-form`, the separate project this repo was copied from. |
-| The repo is private | See "Repo privacy" in the README. No coaching data has ever lived in the repo -- only fictional demo data. |
-| Coaching results and feedback | The code is ready to write both to this project's own Cloudflare D1 database, in separate tables, through the Worker (`worker/index.js`) -- but no Worker or database has been created for this project yet. Nothing has ever been uploaded for real. |
-| Cloudflare / D1 setup | Still to do: `wrangler d1 create auckland_7s_results`, paste the database ID into `wrangler.toml`, run the migration, then `wrangler secret put UPLOAD_KEY` and `wrangler secret put ADMIN_KEY` (matching `UPLOAD_KEY` in `index.html`). See `CLAUDE.md` and the README's "Results, feedback and the Worker" section. Use a fresh Worker and database -- never the original project's. |
-| Deploy | Not connected yet. Once a Cloudflare Worker is created for this project and linked to this GitHub repo, Cloudflare's own GitHub integration will deploy automatically after every push to `main` -- no workflow or secret needed in this repo for it. |
+| Live address | <https://jonobakernz.github.io/auckland-7s-coaching/> -- this is the one to give coaches. Never `coach7srefs.nz` or any other address belonging to `sevens-coaching-form`, the separate project this repo was copied from. |
+| The repo is public | GitHub Pages on the Free plan only serves public repos -- see "Repo privacy" in the README. No coaching data has ever lived in the repo -- only fictional demo data. |
+| Coaching results and feedback | The code is ready to write both to this project's own Cloudflare D1 database, in separate tables, through a separate, API-only Worker (`worker/index.js`) -- but no Worker or database has been created for this project yet. Nothing has ever been uploaded for real. |
+| Cloudflare / D1 setup | Still to do: `wrangler d1 create auckland_7s_results`, paste the database ID into `wrangler.toml`, run the migration, `wrangler secret put UPLOAD_KEY` and `wrangler secret put ADMIN_KEY` (matching `UPLOAD_KEY` in `index.html`), then `wrangler deploy` -- paste the printed `*.workers.dev` URL into `API_BASE` in `index.html`. See `CLAUDE.md` and the README's "Results, feedback and the Worker" section. Use a fresh Worker and database -- never the original project's. |
+| Deploy (front end) | Automatic: GitHub Pages redeploys a short time after every push to `main` (`.github/workflows/pages.yml`). |
+| Deploy (Worker) | Manual: `wrangler deploy` after changing `worker/index.js`. It does not redeploy on push to `main`. |
+| CORS | The Worker only accepts cross-origin requests from `ALLOWED_ORIGIN` in `worker/index.js` (the GitHub Pages address above). Update it there first if the app ever moves to a custom domain. |
 | Offline cache | The cache name in `sw.js` (`CACHE`) is inherited from the original project and has stayed at `sevens-form-v11` since that project's release 11. The app still refreshes its files in the background on each open regardless -- see `sw.js`. Bump `CACHE` by hand if you ever need every phone to drop its old cache in one go. |
 | Upload fields | Do not add or rename fields in `UP_FIELDS` (`index.html`) without a plan. `node tools/check.js` catches an accidental change. |
 | Licence | Still not set (see the README). |
@@ -279,5 +287,5 @@ The app has not been tested on real phones yet. Everything below is either a des
 
 **Housekeeping**
 
-- Set up Cloudflare hosting for this project when ready: a new Worker, a new D1 database (`auckland_7s_results`), and its own domain -- never reusing anything from `sevens-coaching-form`. See `CLAUDE.md` for the exact steps.
+- Set up Cloudflare for results and feedback when ready: a new, API-only Worker and a new D1 database (`auckland_7s_results`) -- never reusing anything from `sevens-coaching-form`. See `CLAUDE.md` for the exact steps.
 - Decide on a licence for the code, or explicitly decide not to and note that choice somewhere.
