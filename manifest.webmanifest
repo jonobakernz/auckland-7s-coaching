@@ -1,7 +1,7 @@
 {
-  "name": "Sevens Coaching Form",
-  "short_name": "Sevens Form",
-  "description": "Referee coaching form for sevens rugby. Works offline.",
+  "name": "Auckland 7s Coaching",
+  "short_name": "Auckland 7s",
+  "description": "Auckland Rugby Referees coaching form for sevens rugby. Works offline.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

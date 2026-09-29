@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Quick checks for the Sevens Coaching Form. No packages needed.
+ * Quick checks for Auckland 7s Coaching. No packages needed.
  * Run from the repo root:  node tools/check.js
  * To accept a deliberate change to the upload fields:  node tools/check.js --update-fields
  */
