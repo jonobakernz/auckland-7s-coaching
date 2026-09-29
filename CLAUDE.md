@@ -8,14 +8,14 @@ A phone app (progressive web app) for rugby referee coaches at sevens tournament
   deliberate exception, not a drift back towards a build pipeline; do not add one for the front end.
 - `sw.js` is the offline service worker. `manifest.webmanifest` holds install details.
 - `fonts/`, `icons/`, `lib/` (QR code maker and scanner) and `demo/` hold assets. `tools/` holds scripts.
-- **Hosted on Cloudflare** (a Worker with static assets, connected to this GitHub repo), at `https://coach7srefs.nz`.
-  Cloudflare redeploys automatically after a push to `main`, no workflow needed on this side -- Cloudflare's own
-  GitHub integration handles it. Two earlier addresses are retired and must not be used or linked anywhere:
-  `https://jonobakernz.github.io/sevens-coaching-form/` (GitHub Pages -- now 404, since Pages does not work on a
-  private repo on the Free plan and the repo is private again) and `https://easy-goingcrow.staticdomains.app/`
-  (static.app -- still online but its own CSP header blocks results and feedback there; see the next point).
-  **The repo is private again.** It only had to be public for the GitHub Pages era; Cloudflare has no such
-  restriction.
+- **This project (`auckland-7s-coaching`) is a separate site from `sevens-coaching-form`, the project it was copied
+  from, and must stay separate.** Hosting is not connected yet, deliberately: when it is, this project runs on its
+  own Cloudflare Worker with static assets, on its own domain. **Never point it at `coach7srefs.nz`, or at any
+  other Worker, D1 database, secret or domain belonging to the original `sevens-coaching-form` project.** That
+  domain, and the GitHub Pages / static.app retirement history further down this file and in
+  `docs/RELEASE_NOTES.md`, describe that project's own deploy history from before this repo was copied -- none of
+  it is this project's history, and none of it should be repeated as if it happened here.
+  **This repo is private.**
 - **Coaching-results uploads and in-app feedback are stored in this site's own Cloudflare D1 database**, written
   through the Worker in `worker/index.js` (`wrangler.toml` wires the Worker, the static-assets binding and the D1
   binding together). This replaced SnapItForms, a third-party form backend used briefly as a trial (Sept 2026) and
@@ -28,14 +28,15 @@ A phone app (progressive web app) for rugby referee coaches at sevens tournament
   `ADMIN_KEY` (a real secret, never in this repo). See `worker/index.js` for the routes and
   `migrations/0001_init.sql` for the schema -- each result row stores its payload as JSON, so the schema does not
   need to change when `SECTIONS` or `UP_FIELDS` do.
-- Setting up a new environment needs a one-off `wrangler d1 create sevens_results`, pasting the database ID into
-  `wrangler.toml`, running the migration, and `wrangler secret put UPLOAD_KEY` / `ADMIN_KEY`. None of that lives in
-  this repo.
+- Setting up a new environment needs a one-off `wrangler d1 create auckland_7s_results`, pasting the database ID
+  into `wrangler.toml`, running the migration, and `wrangler secret put UPLOAD_KEY` / `ADMIN_KEY`. None of that
+  lives in this repo. Use a fresh Cloudflare Worker and D1 database for this project -- never the original
+  `sevens-coaching-form` project's.
 
 ## Rules that matter
-1. **Work on a branch and open a pull request.** Never push to `main`. Never merge. A merge to `main` deploys to Cloudflare. There is no longer a static.app deploy workflow -- that address is frozen at its last release and will never update again.
+1. **Work on a branch and open a pull request.** Never push to `main`. Never merge. Once Cloudflare is connected for this project, a merge to `main` will deploy it -- to this project's own Worker and domain, never `coach7srefs.nz` or anything else belonging to `sevens-coaching-form`.
 2. **Do not change the upload fields** (`UP_FIELDS` in `index.html`) unless the task says so. Anyone exporting from the Worker, or from an old CSV, expects these column names to stay put. `node tools/check.js` fails if they change. If a change is on purpose, run `node tools/check.js --update-fields` and say so in the pull request.
-3. **Never put real names, keys or hosting tokens in the repo.** The static.app deploy key and the `STATICAPP_API_KEY`/`STATICAPP_PID` secret and variable it lived in have been removed entirely, now that nothing deploys there any more. `ADMIN_KEY` (the organiser export key) is a real secret and must only ever be set with `wrangler secret put ADMIN_KEY`, never written to a file. `UPLOAD_KEY` in `index.html` is different: it has to sit in plain sight for a browser-only app to work, so it is not a secret Anthropic-style, but it should not be advertised -- anyone who has it can write junk rows into the database. `wrangler.toml`'s `database_id` is not secret either (it just names which D1 database to use) but leave it as the placeholder in this repo; each environment fills in its own. Demo data is made up.
+3. **Never put real names, keys or hosting tokens in the repo.** `ADMIN_KEY` (the organiser export key) is a real secret and must only ever be set with `wrangler secret put ADMIN_KEY`, never written to a file. `UPLOAD_KEY` in `index.html` is different: it has to sit in plain sight for a browser-only app to work, so it is not a secret Anthropic-style, but it should not be advertised -- anyone who has it can write junk rows into the database. `wrangler.toml`'s `database_id` is not secret either (it just names which D1 database to use) but leave it as the placeholder in this repo; each environment fills in its own. Demo data is made up.
 4. **Private notes stay private.** They must never appear in the shared summary, the email, or the print. They do go in uploads, backups and CSV exports.
 5. **Voice notes stay on the phone.** They are not uploaded, not in backups, and not emailed. Dictation sends audio to the browser's speech service, so it keeps its warning and its switch in Setup.
 6. **Do not edit `CACHE` in `sw.js` by hand for a release.** The deploy workflow sets it from the commit.

@@ -2,26 +2,25 @@
 
 Updated 29 Sept 2026. Current release: 30.
 
+**This file was inherited from `sevens-coaching-form`, the project this repo (`auckland-7s-coaching`) was copied
+from.** Releases 1 to 29 document that project's own history -- including its domain (`coach7srefs.nz`), its
+GitHub Pages and static.app past, and its SnapItForms trial. None of that is this project's history: this project
+has never been deployed anywhere, and must never be pointed at that project's domain, Worker, D1 database or
+secrets. Those entries are kept only because the code features they describe (the eight-area scoring, the
+Worker/D1 upload backend, and so on) are the same features this project inherited. Release 30 onward is this
+project's own history. See "Support reference" below for this project's actual, current status.
+
 ## At a glance
 
-Release 27 is live at <https://coach7srefs.nz>. It is a phone app. Coaches use it to score referees. Organisers
-use it to rank them. This release moves coaching-results uploads and in-app feedback off SnapItForms and onto this
-site's own Cloudflare Worker and D1 database -- see "What is new for organisers" and the Support reference below.
-SnapItForms is no longer used anywhere in the app.
+It is a phone app. Coaches use it to score referees. Organisers use it to rank them. A coach scores a game, the
+phone saves it, and the coach uploads it. The app works without signal. An organiser sets up a tournament with
+one QR code and reviews every referee in one table.
 
-**The site moved from GitHub Pages to Cloudflare, at a new custom domain, and the repo is private again.**
-GitHub Pages had forced this repo to be public, since Pages does not support private repos on the Free plan.
-Cloudflare has no such restriction, so the repo has gone back to private -- reversing that compromise entirely,
-not just relocating it. GitHub Pages itself is now offline (404) as a direct result. No coaching data has ever
-lived in the repo itself, public or private -- only fictional demo data.
-
-Coaching-results uploads and in-app feedback both go to this site's own Worker and database now, not a third
-party. This is still new, so watch real submissions closely -- see the Support reference below before relying on
-it for a real event. Bugs and feature ideas go somewhere else again: a GitHub issue (now private, since the repo
-is), separate from the organiser's feedback box.
-
-A coach scores a game, the phone saves it, and the coach uploads it. The app works without signal. An organiser
-sets up a tournament with one QR code and reviews every referee in one table.
+**Hosting is not connected yet.** The code is ready to upload results and feedback to a Cloudflare Worker and D1
+database (`worker/index.js`), but no Worker, domain or database has been set up for this project -- see the
+Support reference below and the one-off setup steps in `CLAUDE.md` and the README. Until that is done, uploads
+and feedback will report "offline" or fail, by design (`node tools/check.js` deliberately fails on the
+placeholder `UPLOAD_KEY`).
 
 Main changes since the first release:
 
@@ -213,7 +212,7 @@ Most problems come from signal, permissions, or the way iPhone stores data. A fo
 | "Load results file" skips rows | The tournament code is wrong or missing. | Check the code in Setup. The message shows how many rows were skipped. |
 | A referee is missing from the ranking | Too few games, or a filter hides them. | Lower "Minimum games". Set Role to the right role. Clear the tournament and date filters. |
 | The same referee shows twice | Two spellings of one name. | Under "Names", tap "Merge". |
-| The page shows "404" just after a release | GitHub Pages needs a minute or two to publish. | Wait and reload. |
+| The page shows "404" just after a release | Cloudflare needs a minute or two to publish after a merge to `main`. | Wait and reload. |
 | The date box shows the month first | The date box follows the phone's language setting. | Set the phone's region to New Zealand. |
 | Demo forms appear on a real phone | Someone loaded the demo. | Setup, then "Demo and training", then "Remove the demo data". Real forms stay. |
 
@@ -242,14 +241,13 @@ The app has not been tested on real phones yet. Everything below is either a des
 **Not yet tested**
 
 - Voice notes, dictation and QR scanning were tested in simulated browsers with a fake microphone, a fake camera and a made-up speech service. Real phones may differ, especially an iPhone Home Screen app.
-- The Worker and D1 database have not been used for a real tournament yet. Run a practice event before relying on them for one.
-- D1's limits on Cloudflare's free tier are generous for this app's scale, but have not been hit in practice yet.
-- Cloudflare itself has not been used for a real tournament yet. Confirmed only that it serves the site correctly and that a real upload and a real feedback submission both reached the Worker and D1 successfully -- checked directly, not assumed.
+- This project has no Cloudflare Worker or D1 database set up yet, so uploads and feedback have never been tried for real -- see the Support reference. Set that up and run a practice event before relying on it for a real tournament.
+- D1's limits on Cloudflare's free tier are generous for this app's scale, based on the original project's experience, but have not been checked against this project's own usage.
 
 **Design limits**
 
 - The app shows no release number.
-- Coaching-results upload and feedback moved off SnapItForms (a vendor with no independent track record) onto this site's own Worker and D1 database in release 27. That is now first-party infrastructure, not a third-party trial, but it is still new and unproven at real-tournament scale.
+- Coaching-results upload and feedback use a first-party Worker and D1 database, not a third-party vendor -- but for this project specifically, that Worker and database do not exist yet (see "Hosting is not connected yet" above).
 - The repo is private again, back to how the project started; no coaching data has ever lived in it either way.
 - No licence is set for the code.
 - The organiser cannot read results live in the app. Export the entries from the Worker (see the Support reference), then use "Load results file".
@@ -269,35 +267,17 @@ The app has not been tested on real phones yet. Everything below is either a des
 
 | Item | Detail |
 | --- | --- |
-| Live address (from release 25) | https://coach7srefs.nz. This is the one to give coaches. |
-| Old address, retired (GitHub Pages) | https://jonobakernz.github.io/sevens-coaching-form/. Now returns 404 -- Pages does not work on a private repo on the Free plan, and the repo went private again in release 25. |
-| Old address, retired (static.app) | https://easy-goingcrow.staticdomains.app/. The deploy workflow is gone, so this is now frozen at release 21's code forever and will never update. Its own security header also blocked uploads and feedback, so it never worked properly regardless. Point any coach still using either old address to the live one above. |
-| A typo domain exists, not yet redirected | coach7refs.nz (missing the second "s") was registered to catch mistyped visits, but the redirect to the correct domain has not been set up yet. Currently just an unused, separately-registered domain. |
-| The repo is private | Reversed from releases 22 to 24, when it had to be public for GitHub Pages. Cloudflare has no such restriction. No coaching data has ever lived in the repo -- only in the results database. See "Repo privacy" in the README. |
-| Coaching results and feedback (from release 27) | Both go to this site's own Cloudflare D1 database, in separate tables, written through the Worker (`worker/index.js`). Export with `GET https://coach7srefs.nz/api/results?key=ADMIN_KEY` (add `&format=json` for JSON instead of CSV) and `GET .../api/feedback?key=ADMIN_KEY`. `ADMIN_KEY` is a Worker secret -- ask whoever last ran `wrangler secret put ADMIN_KEY` for it, or set a new one (this invalidates the old one, which is fine, nothing else depends on it). |
-| Coaching results and feedback (releases 22 to 26) | Went to SnapItForms, told apart by the `kind` field (results have none set; feedback has `kind: feedback`). Sign in to that account to retrieve old entries -- it is no longer written to as of release 27. |
-| Coaching results (25 Sept 2026, release 21) | Also went to SnapItForms, but a hosting problem fixed in release 22 may have stopped some of these reaching the dashboard. Check with coaches active that day if results are missing. |
-| Coaching results (releases 3 to 20) | Stored with the site's original hosting provider (static.app). Sign in to that account to retrieve old entries. |
-| SnapItForms (used releases 21 to 26, removed in release 27) | Had no independent track record as of Sept 2026 -- no Capterra/G2 listing, no Reddit or Hacker News mention, no GitHub presence. Replaced by this site's own Worker and D1 database rather than waiting to find out if it held up. Old entries are still retrievable from the SnapItForms dashboard until that account is closed. |
-| Deploy (Cloudflare) | Automatic after every push to `main`, via Cloudflare's own GitHub integration (a Worker with static assets, not classic "Pages" -- the dashboard groups both under "Workers & Pages"). No workflow or secret needed in this repo for it. Usually live within a minute or two. |
-| Deploy (static.app, removed in release 26) | The workflow that used to deploy there (`.github/workflows/deploy-static-app.yml`) has been deleted, along with the `STATICAPP_API_KEY` secret and `STATICAPP_PID` variable. Nothing will ever update that address again. |
-| Offline cache | The cache name in `sw.js` (`CACHE`) has stayed at `sevens-form-v11` since release 11. The app still refreshes its files in the background on each open regardless -- see `sw.js`. Bump `CACHE` by hand if you ever need every phone to drop its old cache in one go. |
-| Upload fields | Do not add or rename fields in `UP_FIELDS` (`index.html`) without a plan, whichever backend is in use. `node tools/check.js` catches an accidental change. |
-| Licence | Still not set (see the README). Less urgent now the repo is private again, but still an open decision if it is ever shared or made public. |
+| Live address | None yet. Hosting is not connected for this project -- do not give coaches `coach7srefs.nz` or any other address; that belongs to `sevens-coaching-form`, the separate project this repo was copied from. |
+| The repo is private | See "Repo privacy" in the README. No coaching data has ever lived in the repo -- only fictional demo data. |
+| Coaching results and feedback | The code is ready to write both to this project's own Cloudflare D1 database, in separate tables, through the Worker (`worker/index.js`) -- but no Worker or database has been created for this project yet. Nothing has ever been uploaded for real. |
+| Cloudflare / D1 setup | Still to do: `wrangler d1 create auckland_7s_results`, paste the database ID into `wrangler.toml`, run the migration, then `wrangler secret put UPLOAD_KEY` and `wrangler secret put ADMIN_KEY` (matching `UPLOAD_KEY` in `index.html`). See `CLAUDE.md` and the README's "Results, feedback and the Worker" section. Use a fresh Worker and database -- never the original project's. |
+| Deploy | Not connected yet. Once a Cloudflare Worker is created for this project and linked to this GitHub repo, Cloudflare's own GitHub integration will deploy automatically after every push to `main` -- no workflow or secret needed in this repo for it. |
+| Offline cache | The cache name in `sw.js` (`CACHE`) is inherited from the original project and has stayed at `sevens-form-v11` since that project's release 11. The app still refreshes its files in the background on each open regardless -- see `sw.js`. Bump `CACHE` by hand if you ever need every phone to drop its old cache in one go. |
+| Upload fields | Do not add or rename fields in `UP_FIELDS` (`index.html`) without a plan. `node tools/check.js` catches an accidental change. |
+| Licence | Still not set (see the README). |
 | Wording | Score meanings, quick notes and the referee, coach and level lists are set in the app script and the Setup tab. The README explains where. |
 
 **Housekeeping**
 
-- Rotate or close the SnapItForms access key and account -- it is no longer written to, but old entries (releases 21 to 26) stay there until then. No longer blocked: release 27 is confirmed working end to end (see below).
-- Delete the test entries created verifying releases 25 and 26 from the SnapItForms dashboard before closing it, if you want a record of that period.
-- Decide on a licence for the code, or explicitly decide not to and note that choice somewhere -- less urgent now the repo is private, but still open.
-
-Already done, kept here as a record: the `coach7refs.nz` typo redirect is set up (a Cloudflare Redirect Rule, not
-registrar forwarding, since a DNS-only redirect cannot issue an HTTP redirect by itself -- the typo domain has a
-proxied placeholder DNS record purely so Cloudflare's edge sees the traffic to redirect it); the static.app deploy
-workflow and its secret and variable are removed (release 26); release 27's D1 database and both Worker secrets
-(`UPLOAD_KEY`, `ADMIN_KEY`) are set up and confirmed working end to end (27 Sept 2026) -- a real upload was verified
-landing in D1, then the test row was removed. Worth knowing if this ever needs redoing: a Worker's **Build
-configuration > Variables and secrets** in the Cloudflare dashboard does *not* bind a runtime secret, even though it
-looks like it should -- `env.UPLOAD_KEY` stayed unbound (empty) after setting a value there. `wrangler secret put
-UPLOAD_KEY` / `ADMIN_KEY` from the CLI is what actually worked, and is the reliable way to set either key.
+- Set up Cloudflare hosting for this project when ready: a new Worker, a new D1 database (`auckland_7s_results`), and its own domain -- never reusing anything from `sevens-coaching-form`. See `CLAUDE.md` for the exact steps.
+- Decide on a licence for the code, or explicitly decide not to and note that choice somewhere.
