@@ -1393,16 +1393,19 @@ $('#restore').addEventListener('change', async (e) => {
 });
 
 /* ---------- Upload results ----------
- * Results and feedback are stored in this site's own Cloudflare Worker and D1 database, not a
- * third party -- see CLAUDE.md and wrangler.toml. Both post JSON to a same-origin path, so there is
- * no cross-origin fetch to worry about. UPLOAD_KEY is not a high-value secret (it has to be visible
- * in the page for a browser-only app), but do not publish it -- anyone who has it can write junk
- * rows into the database, the same caution as the tournament code. Organisers export results with
- * ADMIN_KEY, a real secret that is never in this file (see wrangler.toml).
+ * Results and feedback are stored in this project's own Cloudflare Worker and D1 database, not a
+ * third party -- see CLAUDE.md and wrangler.toml. This app is hosted on GitHub Pages while the
+ * Worker runs on Cloudflare, so these are different origins: API_BASE is a full URL, not a
+ * same-origin path, and the Worker sends CORS headers back (see ALLOWED_ORIGIN in worker/index.js).
+ * UPLOAD_KEY is not a high-value secret (it has to be visible in the page for a browser-only app),
+ * but do not publish it -- anyone who has it can write junk rows into the database, the same
+ * caution as the tournament code. Organisers export results with ADMIN_KEY, a real secret that is
+ * never in this file (see wrangler.toml).
  */
-const RESULTS_ENDPOINT = '/api/results';
-const FEEDBACK_ENDPOINT = '/api/feedback';
-const UPLOAD_KEY = 'REPLACE_WITH_YOUR_UPLOAD_KEY'; // must match the Worker's UPLOAD_KEY secret (wrangler secret put UPLOAD_KEY).
+const API_BASE = 'https://auckland-7s-coaching-api.simplsolutions.workers.dev';
+const RESULTS_ENDPOINT = API_BASE + '/api/results';
+const FEEDBACK_ENDPOINT = API_BASE + '/api/feedback';
+const UPLOAD_KEY = '01053b2bc16b1b3bd1ee63455e530983'; // must match the Worker's UPLOAD_KEY secret (wrangler secret put UPLOAD_KEY).
 
 /* Bugs and ideas go to the public GitHub repo instead of the organiser's results database --
  * it's a separate audience (the people who build the app, not the one running this tournament) and
@@ -1435,12 +1438,11 @@ function payload(f) {
   return p;
 }
 
-/* Throws Error('offline') when there is no point trying (no signal, or the key is not set up
- * yet), and Error('failed') for anything the network or the Worker rejected. Same origin as the
- * page, so no CORS surprises the way a third-party endpoint could cause. */
+/* Throws Error('offline') when there is no point trying (no signal, or the Worker is not set up
+ * yet), and Error('failed') for anything the network or the Worker rejected. */
 async function uploadOne(f) {
   if (!navigator.onLine) throw new Error('offline');
-  if (!UPLOAD_KEY || UPLOAD_KEY.startsWith('REPLACE_WITH_')) throw new Error('offline');
+  if (!UPLOAD_KEY || UPLOAD_KEY.startsWith('REPLACE_WITH_') || API_BASE.startsWith('https://REPLACE_WITH_')) throw new Error('offline');
   const p = payload(f);
   const ctrl = new AbortController();
   const limit = setTimeout(() => ctrl.abort(), 25000);
@@ -1485,8 +1487,8 @@ async function doUpload(list) {
   updateTabs();
   if (!$('#view-saved').hidden) renderSaved();
   if (!err) toast(ok === 1 ? 'Results uploaded' : `${ok} forms uploaded`);
-  else if (err.message === 'offline') toast(UPLOAD_KEY.startsWith('REPLACE_WITH_')
-    ? 'Uploads are not set up yet. See UPLOAD_KEY in index.html.'
+  else if (err.message === 'offline') toast((UPLOAD_KEY.startsWith('REPLACE_WITH_') || API_BASE.startsWith('https://REPLACE_WITH_'))
+    ? 'Uploads are not set up yet. See UPLOAD_KEY and API_BASE in index.html.'
     : 'No connection. The forms are saved. Try again with signal.');
   else if (list.length === 1) toast('Upload did not work. Try again.');
   else {
@@ -1496,14 +1498,14 @@ async function doUpload(list) {
 }
 
 /* ---------- Feedback ----------
- * Posts to its own D1 table, kept separate from results (see worker/index.js). Same-origin fetch,
- * like uploadOne().
+ * Posts to its own D1 table, kept separate from results (see worker/index.js). Cross-origin fetch
+ * to the Worker, like uploadOne().
  */
 let fbBusy = false;
 
 async function submitFeedback(msg) {
   if (!navigator.onLine) throw new Error('offline');
-  if (!UPLOAD_KEY || UPLOAD_KEY.startsWith('REPLACE_WITH_')) throw new Error('offline');
+  if (!UPLOAD_KEY || UPLOAD_KEY.startsWith('REPLACE_WITH_') || API_BASE.startsWith('https://REPLACE_WITH_')) throw new Error('offline');
   const body = { message: msg, tournament: (cfg.t || '').trim(), coach: (cur.coach || '').trim(), device: navigator.userAgent };
   const ctrl = new AbortController();
   const limit = setTimeout(() => ctrl.abort(), 25000);

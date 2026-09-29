@@ -1,0 +1,37 @@
+name: Deploy to GitHub Pages
+
+# Publishes the static app only -- not the Worker, migrations, docs or tooling (see
+# .github/pages-exclude.txt). The Worker deploys separately to Cloudflare; see CLAUDE.md.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage the static app
+        run: |
+          mkdir -p "$RUNNER_TEMP/site"
+          rsync -a --exclude-from=.github/pages-exclude.txt ./ "$RUNNER_TEMP/site/"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/site
+      - id: deployment
+        uses: actions/deploy-pages@v4

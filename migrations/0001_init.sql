@@ -1,5 +1,5 @@
--- Sevens Coaching Form: results and feedback storage (replaces SnapItForms).
--- Apply with: wrangler d1 execute sevens_results --file=migrations/0001_init.sql
+-- Auckland 7s Coaching: results and feedback storage.
+-- Apply with: wrangler d1 execute auckland_7s_results --file=migrations/0001_init.sql
 -- (add --remote to apply to the live database instead of the local dev one)
 
 -- One row per form_id: a re-upload of an edited form replaces the row rather than adding another.

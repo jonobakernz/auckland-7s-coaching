@@ -1,11 +1,11 @@
-name = "auckland-7s-coaching"
+# The static front end is hosted on GitHub Pages (see .github/workflows/pages.yml), not by this
+# Worker -- there is no [assets] binding here on purpose. This Worker is API-only: /api/results and
+# /api/feedback, backed by D1. Because GitHub Pages and this Worker are different origins, the Worker
+# sends CORS headers (see ALLOWED_ORIGIN in worker/index.js) and index.html's RESULTS_ENDPOINT /
+# FEEDBACK_ENDPOINT are full URLs, not same-origin paths.
+name = "auckland-7s-coaching-api"
 main = "worker/index.js"
 compatibility_date = "2024-09-23"
-
-[assets]
-directory = "./"
-binding = "ASSETS"
-run_worker_first = true
 
 # Set up once per environment (not needed again after this):
 #   wrangler d1 create auckland_7s_results
@@ -13,6 +13,8 @@ run_worker_first = true
 #   wrangler d1 execute auckland_7s_results --remote --file=migrations/0001_init.sql
 #   wrangler secret put UPLOAD_KEY    (must match UPLOAD_KEY in index.html)
 #   wrangler secret put ADMIN_KEY     (organiser-only export key; keep this one truly secret)
+#   wrangler deploy                   (prints this Worker's *.workers.dev URL --
+#                                       paste it into API_BASE in index.html)
 # This repo was copied from sevens-coaching-form -- the database_id values below are its
 # placeholders again, not that repo's real ones. Do not point this Worker at another site's
 # database, and do not reuse another site's Worker name.

@@ -45,10 +45,11 @@ See [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for what changed in each rele
 | `demo/` | Made-up tournament data: `demo.json`, plus a CSV and a backup file for testing |
 | `tools/` | Scripts that make the demo data and the icons |
 | `docs/` | Release notes and the demo overview picture |
-| `.github/workflows/` | Runs `node tools/check.js` on every pull request |
-| `worker/index.js` | The Cloudflare Worker: serves the app and the `/api/results` and `/api/feedback` routes |
+| `.github/workflows/checks.yml` | Runs `node tools/check.js` on every pull request |
+| `.github/workflows/pages.yml`, `.github/pages-exclude.txt` | Deploys the static app to GitHub Pages on every push to `main` |
+| `worker/index.js` | The Cloudflare Worker: an API-only backend for the `/api/results` and `/api/feedback` routes (does not serve the app -- GitHub Pages does) |
 | `migrations/` | D1 database schema (`0001_init.sql`) |
-| `wrangler.toml` | Wires the Worker, the static-assets binding and the D1 binding together |
+| `wrangler.toml` | Wires the Worker and the D1 binding together |
 
 ## Run it on your computer
 
@@ -64,16 +65,22 @@ Cloudflare account access is needed just to test).
 ## Deploy
 
 **This project is separate from `sevens-coaching-form`**, the project it was copied from, and must stay separate.
-Hosting is not connected yet, deliberately -- see `CLAUDE.md` for the one-off Cloudflare/D1 setup steps. Once it
-is, this project will run on its own **Cloudflare** Worker with static assets, on its own domain. **Never point
-it at `coach7srefs.nz`, or at any other Worker, D1 database, secret or domain belonging to the original
-`sevens-coaching-form` project.** Cloudflare's own GitHub integration will deploy automatically a short time
-after every push to `main` once it is connected -- no workflow or secret is needed in this repo for it. Merging a
-pull request to `main` is what puts a change live, so treat every merge as a release.
+**Never point it at `coach7srefs.nz`, or at any other Worker, D1 database, secret or domain belonging to the
+original `sevens-coaching-form` project.**
+
+The front end is hosted on **GitHub Pages**, a deliberate, different choice from the original project (which
+moved away from Pages) -- `.github/workflows/pages.yml` deploys `main` there automatically a short time after
+every push, publishing the static app only (`.github/pages-exclude.txt` lists what's left out: the Worker,
+migrations, `wrangler.toml`, `tools/`, `docs/`, and these docs themselves). Merging a pull request to `main` is
+what puts a change live, so treat every merge as a release. The live address is
+<https://jonobakernz.github.io/auckland-7s-coaching/>.
+
+Results and feedback go to a separate, API-only **Cloudflare** Worker with a D1 database -- see "Results, feedback
+and the Worker" below. It does not redeploy on push to `main`; run `wrangler deploy` by hand after changing
+`worker/index.js`.
 
 The GitHub Pages and static.app history you may see referenced in `sevens-coaching-form`'s own docs is that
-project's history, from before this repo was copied. It never applied here: this repo has never deployed anywhere
-but is not yet connected to Cloudflare.
+project's history, from before this repo was copied. It never applied here.
 
 Phones cache the app for offline use, so a release does not reach everyone straight away. `sw.js` refreshes its
 cached files in the background each time the app opens; once a phone has the new files, it picks them up after
@@ -82,7 +89,8 @@ does this automatically.
 
 ## Repo privacy
 
-**This repo is private.** If it is ever made public for any reason, the same care applies as before:
+**This repo is public.** GitHub Pages on the Free plan only serves public repos -- that trade-off was made on
+purpose to use Pages. There is nothing in the repo that visibility puts at risk:
 
 - No real coaching data, referee names, or coach names should ever go into this repo. Real results and feedback
   live in the D1 database. The repo should only ever hold fictional demo data (see `demo/`).
@@ -94,10 +102,15 @@ does this automatically.
 
 ## Results, feedback and the Worker
 
-Coaching-results uploads and in-app feedback are stored in this site's own Cloudflare D1 database, written
-through the Worker in `worker/index.js`. This replaced [SnapItForms](https://snapitforms.com/), a third-party
-form backend used briefly as a trial (Sept 2026) with no independent track record -- see
+Coaching-results uploads and in-app feedback are stored in this project's own Cloudflare D1 database, written
+through a separate, API-only Worker in `worker/index.js` -- it has no static-assets binding, since GitHub Pages
+hosts the front end. This replaced [SnapItForms](https://snapitforms.com/), a third-party form backend used
+briefly as a trial (Sept 2026) with no independent track record -- see
 [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for that history.
+
+Because GitHub Pages and the Worker are different origins, every response from the Worker carries CORS headers
+(`ALLOWED_ORIGIN` in `worker/index.js`, which must match the Pages URL), and `index.html`'s `RESULTS_ENDPOINT` /
+`FEEDBACK_ENDPOINT` are full URLs built from `API_BASE`, not same-origin paths.
 
 - `POST /api/results` and `POST /api/feedback` accept an upload and a feedback message. Each needs the
   `X-Upload-Key` header to match the Worker's `UPLOAD_KEY` secret -- `UPLOAD_KEY` near the top of `index.html`
@@ -108,7 +121,8 @@ form backend used briefly as a trial (Sept 2026) with no independent track recor
   never written to a file.
 - One-off setup for a new environment: `wrangler d1 create auckland_7s_results`, paste the database ID it prints
   into `wrangler.toml`, run `wrangler d1 execute auckland_7s_results --remote --file=migrations/0001_init.sql`,
-  then `wrangler secret put UPLOAD_KEY` and `wrangler secret put ADMIN_KEY`. Use a fresh Worker and database for
+  then `wrangler secret put UPLOAD_KEY` and `wrangler secret put ADMIN_KEY`, then `wrangler deploy` -- paste the
+  printed `*.workers.dev` URL into `API_BASE` near the top of `index.html`. Use a fresh Worker and database for
   this project -- never the original `sevens-coaching-form` project's.
 - If a submission fails for a reason other than "no signal" (the Worker down, a rejected key), the coach sees a
   generic failure message. Either way the form or the feedback text stays on the phone until it sends -- nothing

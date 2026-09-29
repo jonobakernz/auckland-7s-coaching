@@ -51,8 +51,15 @@ noFont.length ? bad('fonts named in the CSS are missing: ' + noFont.join(', ')) 
 html.includes('static-form') || /snapitforms\.com/i.test(html)
   ? bad('a leftover static.app form hook or a SnapItForms endpoint is in index.html. Results and feedback now go to this site\'s own Worker (RESULTS_ENDPOINT / FEEDBACK_ENDPOINT) -- remove it, or update this check if a third-party backend is in use again on purpose.')
   : ok('no leftover static.app or SnapItForms remnant');
-const endpointsSameOrigin = /const RESULTS_ENDPOINT = '\/api\/results';/.test(html) && /const FEEDBACK_ENDPOINT = '\/api\/feedback';/.test(html);
-endpointsSameOrigin ? ok('RESULTS_ENDPOINT and FEEDBACK_ENDPOINT are same-origin paths') : bad('RESULTS_ENDPOINT / FEEDBACK_ENDPOINT are missing or no longer point at the Worker\'s own /api/ paths');
+/* The front end (GitHub Pages) and the Worker (Cloudflare) are different origins on purpose --
+ * RESULTS_ENDPOINT / FEEDBACK_ENDPOINT are API_BASE + the Worker's /api/ paths, not same-origin
+ * paths. */
+const endpointsFromApiBase = /const RESULTS_ENDPOINT = API_BASE \+ '\/api\/results';/.test(html) && /const FEEDBACK_ENDPOINT = API_BASE \+ '\/api\/feedback';/.test(html);
+endpointsFromApiBase ? ok('RESULTS_ENDPOINT and FEEDBACK_ENDPOINT are built from API_BASE') : bad('RESULTS_ENDPOINT / FEEDBACK_ENDPOINT are missing or no longer point at the Worker\'s /api/ paths');
+const apiBaseMatch = html.match(/const API_BASE = '([^']*)'/);
+if (!apiBaseMatch) bad('API_BASE is missing from index.html');
+else if (apiBaseMatch[1].startsWith('https://REPLACE_WITH_') || !apiBaseMatch[1]) bad('API_BASE is still a placeholder. Uploads and feedback will not work until it is set to the deployed Worker\'s URL (wrangler deploy prints it).');
+else ok('API_BASE looks like it has been set');
 const keyMatch = html.match(/const UPLOAD_KEY = '([^']*)'/);
 if (!keyMatch) bad('UPLOAD_KEY is missing from index.html');
 else if (keyMatch[1].startsWith('REPLACE_WITH_') || !keyMatch[1]) bad('UPLOAD_KEY is still a placeholder. Uploads will not work until it matches the Worker\'s UPLOAD_KEY secret (wrangler secret put UPLOAD_KEY).');

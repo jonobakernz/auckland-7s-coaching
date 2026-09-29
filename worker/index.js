@@ -1,18 +1,33 @@
 /*
- * Sevens Coaching Form: Worker backend.
- * Serves the static app (index.html, sw.js, icons, fonts, lib -- everything Cloudflare's asset
- * binding sees) and two small JSON APIs backed by D1, replacing the SnapItForms trial:
+ * Auckland 7s Coaching: Worker backend, API-only.
+ * The static app (index.html, sw.js, icons, fonts, lib) is hosted on GitHub Pages, not by this
+ * Worker -- see .github/workflows/pages.yml. This Worker only answers two small JSON APIs backed
+ * by D1:
  *   POST /api/results   -- a coach's upload. Upserts one row per form_id (see migrations/0001_init.sql).
  *   GET  /api/results   -- organiser export (CSV by default, ?format=json), needs ADMIN_KEY.
  *   POST /api/feedback  -- in-app feedback from Setup.
  *   GET  /api/feedback  -- organiser export (JSON), needs ADMIN_KEY.
- * UPLOAD_KEY (checked on the two POST routes) is the same kind of key SNAPIT_ACCESS_KEY used to be:
- * visible in index.html by necessity, not a real secret, just enough to stop drive-by junk. ADMIN_KEY
- * is a real secret -- only ever set with `wrangler secret put ADMIN_KEY`, never written to a file.
+ * UPLOAD_KEY (checked on the two POST routes) has to be visible in index.html by necessity, not a
+ * real secret, just enough to stop drive-by junk. ADMIN_KEY is a real secret -- only ever set with
+ * `wrangler secret put ADMIN_KEY`, never written to a file.
+ *
+ * GitHub Pages and this Worker are different origins, so every response needs CORS headers, and
+ * the browser sends a preflight OPTIONS request before each POST. ALLOWED_ORIGIN must match exactly
+ * where GitHub Pages serves this app -- update it if a custom domain is ever added to Pages.
  */
 
+const ALLOWED_ORIGIN = 'https://jonobakernz.github.io';
+
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-Upload-Key',
+  };
+}
+
 function json(body, status = 200) {
-  return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...corsHeaders() } });
 }
 
 function csvCell(v) {
@@ -63,7 +78,11 @@ async function exportResults(request, env, url) {
   const rows = results.map((r) => JSON.parse(r.payload));
   if (url.searchParams.get('format') === 'json') return json(rows);
   return new Response(toCSV(rows), {
-    headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="sevens-results.csv"' }
+    headers: {
+      'Content-Type': 'text/csv; charset=utf-8',
+      'Content-Disposition': 'attachment; filename="sevens-results.csv"',
+      ...corsHeaders(),
+    },
   });
 }
 
@@ -90,14 +109,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // Serve the how-to guide on the help subdomain, whatever path is requested.
-    // TODO: this repo was copied from sevens-coaching-form -- replace with this site's own
-    // help subdomain once its custom domain is set up in Cloudflare.
-    if (url.hostname === 'help.REPLACE_WITH_YOUR_DOMAIN') {
-      const assetUrl = new URL(request.url);
-      assetUrl.pathname = '/help';
-      return env.ASSETS.fetch(new Request(assetUrl, request));
-    }
+    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders() });
 
     if (url.pathname === '/api/results') {
       if (request.method === 'POST') return saveResult(request, env);
@@ -107,6 +119,6 @@ export default {
       if (request.method === 'POST') return saveFeedback(request, env);
       if (request.method === 'GET') return exportFeedback(request, env, url);
     }
-    return env.ASSETS.fetch(request);
+    return json({ success: false, error: 'not_found' }, 404);
   }
 };
