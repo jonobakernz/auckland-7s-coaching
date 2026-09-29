@@ -1,6 +1,6 @@
 # Sevens Coaching Form: release notes
 
-Updated 29 Sept 2026. Current release: 32.
+Updated 29 Sept 2026. Current release: 33.
 
 **This file was inherited from `sevens-coaching-form`, the project this repo (`auckland-7s-coaching`) was copied
 from.** Releases 1 to 29 document that project's own history -- including its domain (`coach7srefs.nz`), its
@@ -29,7 +29,7 @@ the database is shared with `sevens-coaching-form`.
 Main changes since the first release:
 
 - A New Zealand rugby look, in Auckland Rugby Referees' navy and gold, with te reo Māori labels.
-- Eight scored areas, score meanings, quick notes and feedback boxes.
+- Three scored areas plus an overall rating, score meanings, quick notes and feedback boxes.
 - Dictation and voice notes in every comment box.
 - Upload, email, share and print options.
 - Organiser tools: setup QR code, referee ranking, coach marking, and a demo tournament.
@@ -98,7 +98,7 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 **Review tab**
 
-- A ranked table shows games, coaches, rating and the seven area averages. Tap a heading to sort. Tap a name to read every comment, private notes included.
+- A ranked table shows games, coaches, rating and the three area averages. Tap a heading to sort. Tap a name to read every comment, private notes included.
 - Filters: tournament, role, date range and minimum games.
 - A referee with fewer games than the minimum is "provisional" and has no rank.
 - "Adjust ratings for coach marking style" corrects for hard and easy markers. It adjusts only coaches with 3 or more forms.
@@ -122,10 +122,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 32 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 33 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 29 Sept 2026 | 33. Scoring cut down to Auckland Rugby Referees' three priorities | The 7 scored sub-areas (Foul play, Breakdowns / tackle, Restarts, Positioning & fitness, Game awareness, Game management, Communication) are replaced by one scored row per priority: Decision-making accuracy, Referee positioning, Game feel & awareness. Each row's quick-note tags are a short, representative set drawn from the same source (the "Sevens Priorities & Application" session), not the full list every sub-area had. Distance from contest stays under Referee positioning. `UP_FIELDS` changed from 36 to 28 fields (`node tools/check.js --update-fields` run) -- anyone exporting from the Worker or an old CSV will see fewer score/comment columns. Demo data and `help.html` were updated to match. | The Form tab shows 3 score rows instead of 7, with no group headings above them (each row is already one priority). The Review table's per-area columns are now Decisions / Positioning / Awareness instead of seven separate columns. |
 | 29 Sept 2026 | 32. Cloudflare Worker and D1 database connected | A new, API-only Worker (`auckland-7s-coaching-api`) and D1 database (`auckland_7s_results`, plus an `auckland_7s_results_preview` database) were created on the same Cloudflare account as `sevens-coaching-form` but kept fully separate -- neither the Worker name nor the database is shared. The migration was run, fresh `UPLOAD_KEY` and `ADMIN_KEY` secrets were set on the Worker, and `API_BASE` / `UPLOAD_KEY` in `index.html` were updated to match. No scoring, fields or layout changed. | Uploads and feedback now go through instead of saying "not set up yet". |
 | 29 Sept 2026 | 31. Hosting: GitHub Pages for the app, a separate Cloudflare Worker for results and feedback | A deliberate, different choice from `sevens-coaching-form`: the front end deploys to GitHub Pages (`.github/workflows/pages.yml`) instead of a Cloudflare Worker with static assets, which makes this repo public (GitHub Pages on the Free plan only serves public repos). `worker/index.js` is now API-only (no `[assets]` binding, no help-subdomain routing) and sends CORS headers, since GitHub Pages and the Worker are different origins. `index.html`'s `RESULTS_ENDPOINT` / `FEEDBACK_ENDPOINT` changed from same-origin paths to full URLs built from a new `API_BASE` constant, set once the Worker is deployed. No scoring, fields or layout changed. | The app is reachable at jonobakernz.github.io/auckland-7s-coaching. Uploads still say "not set up yet" until both `API_BASE` and `UPLOAD_KEY` are set. |
 | 29 Sept 2026 | 30. Auckland Rugby Referees colours | The jersey theme (header, tabs, primary buttons, selected states, review table headers) changed from near-black to Auckland Rugby Referees' navy (`#0E234B`), matching their site at arra.org.nz. The gold used for the yellow-card accent was already close to ARRA's gold and is unchanged. The app icon and browser theme colour were regenerated to match. No fields, scoring or layout changed. | The header, tab bar and primary buttons are navy blue instead of near-black. |
