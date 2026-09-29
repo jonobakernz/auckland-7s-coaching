@@ -1,6 +1,6 @@
 # Sevens Coaching Form: release notes
 
-Updated 27 Sept 2026. Current release: 28.
+Updated 29 Sept 2026. Current release: 29.
 
 ## At a glance
 
@@ -119,10 +119,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 28 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 29 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 29 Sept 2026 | 29. Areas regrouped under Auckland Rugby Referees' three coaching priorities | The 7 scored areas are unchanged, but now sit under three group headings from Auckland Rugby Referees' "Sevens Priorities & Application" session: Decision-making accuracy (Foul play, Breakdowns / tackle, Restarts -- renamed from Set phase), Referee positioning (Positioning & fitness -- renamed from Fitness, now also holding the distance-from-contest chips, moved off Game awareness), and Game feel & awareness (Game awareness, Game management, Communication). Quick-note tags were refreshed with wording from that session (e.g. "Jackler stayed on feet to contest", "Kept to the 30-second kick clock"). `UP_FIELDS` order changed to match (`node tools/check.js --update-fields` run) -- field names themselves did not change. | Three bold section headings (Decision-making accuracy / Referee positioning / Game feel & awareness) above the score rows. Distance from contest now sits under Positioning & fitness, not Game awareness. |
 | 27 Sept 2026 | 28. Provincial union field in Match details | A new "Union" dropdown sits above Tournament under "Match details", listing the 24 New Zealand provincial unions. It carries over between forms like tournament and level do. Added to `UP_FIELDS` (`node tools/check.js --update-fields` run), so it uploads and exports alongside the other match details. | A "Union" dropdown above Tournament under "Match details". |
 | 27 Sept 2026 | 27. Results and feedback moved off SnapItForms, onto this site's own Cloudflare Worker and D1 database | `uploadOne()` and `submitFeedback()` now post to `/api/results` and `/api/feedback` on the same origin, not `api.snapitforms.com`. A new Worker (`worker/index.js`) writes to D1; organisers export with a Worker URL and `ADMIN_KEY` instead of the SnapItForms dashboard. `UPLOAD_KEY` in `index.html` replaces `SNAPIT_ACCESS_KEY`. Upload fields (`UP_FIELDS`) are unchanged. | No visible change to coaching or scoring. The upload status line no longer says "This is a trial upload service." |
 | 27 Sept 2026 | 26. Removed the static.app deploy workflow | The GitHub Actions workflow that deployed to static.app is deleted, along with the `STATICAPP_API_KEY` secret and `STATICAPP_PID` variable. That address (easy-goingcrow.staticdomains.app) is now permanently frozen at release 21's code and will never update again. Nothing about the app changed. | No visible change. Documentation and repository housekeeping only. |
