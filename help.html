@@ -6,29 +6,35 @@
 <title>Auckland 7s Coaching — How to Guide</title>
 <meta name="description" content="How to use the Auckland 7s Coaching app at a 7s tournament — for organisers and coaches.">
 <style>
+  /* Oswald and Source Sans 3, SIL Open Font License -- same files the app itself uses. */
+  @font-face { font-family: "Oswald"; font-style: normal; font-weight: 600 700; font-display: swap; src: url(fonts/oswald-latin-600-700.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Oswald"; font-style: normal; font-weight: 600 700; font-display: swap; src: url(fonts/oswald-latin-ext-600-700.woff2) format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 400 600; font-display: swap; src: url(fonts/source-sans-3-latin-400-600.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 400 600; font-display: swap; src: url(fonts/source-sans-3-latin-ext-400-600.woff2) format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
   :root{
-    --ink:#111111;
-    --paper:#eef1f2;
+    /* Auckland Rugby Referees palette -- matches the app's own CSS variables in index.html. */
+    --ink:#17202A;
+    --paper:#F4F6F8;
     --card:#ffffff;
-    --accent:#f0c419;
-    --accent-ink:#111111;
-    --muted:#5b6266;
-    --line:#111111;
-    --green:#1f7a4d;
-    --green-bg:#e3f3ea;
-    --radius:10px;
+    --accent:#063872;
+    --accent2:#006CB4;
+    --accent-ink:#ffffff;
+    --muted:#55606B;
+    --line:#063872;
+    --danger:#C8102E;
+    --radius:6px;
   }
   @media (prefers-color-scheme: dark){
     :root{
       --ink:#f2f2f2;
       --paper:#121416;
       --card:#1b1e21;
-      --accent:#f0c419;
+      --accent:#5B9BD5;
+      --accent2:#8AB4F8;
       --accent-ink:#111111;
       --muted:#a7adb1;
-      --line:#3a3f43;
-      --green:#57d197;
-      --green-bg:#123425;
+      --line:#5B9BD5;
+      --danger:#FF8A80;
     }
   }
   *{box-sizing:border-box;}
@@ -36,13 +42,13 @@
   body{
     background:var(--paper);
     color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
   }
   h1,h2,h3,h4{
-    font-family:inherit;
-    font-weight:900;
+    font-family:"Oswald","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
+    font-weight:700;
     letter-spacing:-0.01em;
     line-height:1.15;
   }
@@ -50,24 +56,22 @@
   p{margin:0 0 12px 0;}
   .wrap{max-width:880px;margin:0 auto;padding:0 20px;}
 
-  /* Top bar, styled after the app's own black header + yellow rule */
+  /* Top bar, styled after the app's own navy header + crest */
   header.topbar{
-    background:#111111;
+    background:var(--accent);
     color:#ffffff;
-    border-bottom:4px solid var(--accent);
+    border-bottom:4px solid var(--accent2);
   }
   header.topbar .inner{
     max-width:880px;margin:0 auto;padding:22px 20px 20px;
     display:flex;align-items:center;gap:14px;
   }
-  .logo7{
-    font-size:40px;font-weight:900;line-height:1;
-    background:var(--accent);color:#111;
+  .crest{
     width:52px;height:52px;flex:none;
-    display:flex;align-items:center;justify-content:center;
-    border-radius:8px;
+    border-radius:4px;
+    object-fit:contain;
   }
-  header.topbar h1{font-size:22px;margin:0;color:#fff;text-transform:uppercase;}
+  header.topbar h1{font-size:26px;margin:0;color:#fff;text-transform:uppercase;}
   header.topbar .sub{font-size:13px;color:#c9c9c9;margin-top:2px;}
 
   /* Quick-jump nav */
@@ -90,7 +94,7 @@
     color:var(--ink);
     background:var(--paper);
   }
-  nav.toc a:hover{background:var(--accent);border-color:var(--accent);}
+  nav.toc a:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
 
   main{padding:28px 0 10px;}
 
@@ -136,8 +140,8 @@
   }
   .callout strong{display:block;margin-bottom:2px;text-transform:uppercase;font-size:12px;letter-spacing:.04em;color:var(--muted);}
 
-  .warn{border-left-color:#c0392b;}
-  .warn strong{color:#c0392b;}
+  .warn{border-left-color:var(--danger);}
+  .warn strong{color:var(--danger);}
 
   .chip{
     display:inline-block;
@@ -158,7 +162,7 @@
     font-weight:900;font-size:15px;
     background:var(--paper);
   }
-  .scale .n.mid{background:var(--accent);border-color:var(--accent);color:#111;}
+  .scale .n.mid{background:var(--accent);border-color:var(--accent);color:#fff;}
 
   table.areas{width:100%;border-collapse:collapse;margin:10px 0 4px;font-size:14px;}
   table.areas th, table.areas td{
@@ -167,8 +171,8 @@
     text-align:left;
     vertical-align:top;
   }
-  table.areas th{background:var(--ink);color:var(--paper);font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;}
-  table.areas tr:nth-child(even) td{background:rgba(240,196,25,0.08);}
+  table.areas th{background:var(--accent);color:#fff;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;}
+  table.areas tr:nth-child(even) td{background:rgba(6,56,114,0.06);}
 
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   @media(max-width:640px){.two-col{grid-template-columns:1fr;}}
@@ -210,7 +214,7 @@
 
 <header class="topbar">
   <div class="inner">
-    <div class="logo7">7</div>
+    <img class="crest" src="icons/arra-crest.png" alt="Auckland Rugby Referees">
     <div>
       <h1>Auckland 7s Coaching</h1>
       <div class="sub">How-to guide — using the app at a 7s tournament</div>
