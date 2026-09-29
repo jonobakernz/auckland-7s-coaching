@@ -91,7 +91,9 @@ export default {
     const url = new URL(request.url);
 
     // Serve the how-to guide on the help subdomain, whatever path is requested.
-    if (url.hostname === 'help.coach7srefs.nz') {
+    // TODO: this repo was copied from sevens-coaching-form -- replace with this site's own
+    // help subdomain once its custom domain is set up in Cloudflare.
+    if (url.hostname === 'help.REPLACE_WITH_YOUR_DOMAIN') {
       const assetUrl = new URL(request.url);
       assetUrl.pathname = '/help';
       return env.ASSETS.fetch(new Request(assetUrl, request));
