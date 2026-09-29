@@ -40,7 +40,7 @@ See [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) for what changed in each rele
 | `index.html` | The whole app: page, styles and script |
 | `sw.js` | Service worker for offline use |
 | `manifest.webmanifest` | Install details |
-| `icons/`, `fonts/` | App icons and the Barlow fonts (SIL Open Font License) |
+| `icons/`, `fonts/` | App icons and the Oswald and Source Sans 3 fonts (SIL Open Font License) |
 | `lib/` | QR code maker and QR scanner. Loaded only when used. See `lib/LICENSES.txt` |
 | `demo/` | Made-up tournament data: `demo.json`, plus a CSV and a backup file for testing |
 | `tools/` | Scripts that make the demo data and the icons |

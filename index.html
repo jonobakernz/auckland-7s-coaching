@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sevens Coaching Form</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0E234B">
+<meta name="theme-color" content="#063872">
 <meta name="color-scheme" content="light dark">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,58 +15,69 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <script>try{var t=JSON.parse(localStorage.getItem('sevens.theme.v1'));if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
-/* Barlow and Barlow Condensed, SIL Open Font License. Latin-ext carries the macrons for te reo Māori. */
-@font-face { font-family: "Barlow"; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/barlow-latin-400.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Barlow"; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/barlow-latin-ext-400.woff2) format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
-@font-face { font-family: "Barlow"; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/barlow-latin-600.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Barlow"; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/barlow-latin-ext-600.woff2) format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
-@font-face { font-family: "Barlow Condensed"; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/barlow-condensed-latin-700.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Barlow Condensed"; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/barlow-condensed-latin-ext-700.woff2) format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
-@font-face { font-family: "Barlow Condensed"; font-style: normal; font-weight: 800; font-display: swap; src: url(fonts/barlow-condensed-latin-800.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Barlow Condensed"; font-style: normal; font-weight: 800; font-display: swap; src: url(fonts/barlow-condensed-latin-ext-800.woff2) format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+/* Oswald and Source Sans 3, SIL Open Font License. Latin-ext carries the macrons for te reo Māori.
+ * Both are variable fonts; each @font-face declares the weight range it covers. */
+@font-face { font-family: "Oswald"; font-style: normal; font-weight: 600 700; font-display: swap; src: url(fonts/oswald-latin-600-700.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Oswald"; font-style: normal; font-weight: 600 700; font-display: swap; src: url(fonts/oswald-latin-ext-600-700.woff2) format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 400 600; font-display: swap; src: url(fonts/source-sans-3-latin-400-600.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 400 600; font-display: swap; src: url(fonts/source-sans-3-latin-ext-400-600.woff2) format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 
 
 :root {
-  --jersey: #0E234B;
-  --sideline: #F1F3F4;
+  /* Auckland Rugby Referees palette. --jersey2 is the secondary blue: focus rings, active
+     accents, sort arrows -- never the dominant background. --card-y/--card-r stay reserved
+     for the yellow/red card icon; nothing else should use them. */
+  --jersey: #063872;
+  --jersey2: #006CB4;
+  --jersey-tint: #EAF3F9;
+  --sideline: #F4F6F8;
   --paper: #FFFFFF;
-  --ink: #111214;
+  --ink: #17202A;
   --muted: #55606B;
   --soft: #5F6A75;
   --line: #C5CBD0;
   --edge: #828C95;
   --silver: #9EA7AF;
-  --card-y: #F5C400;
+  --card-y: #F8BF2E;
   --card-r: #C62828;
   --pounamu: #1E6B57;
-  --danger: #954B34;
+  --danger: #C8102E;
   --pri-bg: var(--jersey);
   --pri-ink: #FFFFFF;
   --sel-bg: var(--jersey);
   --sel-ink: #FFFFFF;
-  --focus: #1A73E8;
+  --focus: var(--jersey2);
   --bw: 2px;
-  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
-  --body: "Barlow", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --display: "Oswald", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+  --body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root[data-theme=auto] {
     --sideline: #0B0C0D; --paper: #16181A; --ink: #EEF1F2; --muted: #98A3AC; --soft: #98A3AC;
     --line: #2C3238; --edge: #6F7A84; --silver: #6B757E; --pounamu: #3FB596; --danger: #FF8A80;
     --pri-bg: #EEF1F2; --pri-ink: #111214; --sel-bg: #EEF1F2; --sel-ink: #111214; --focus: #8AB4F8;
+    --jersey: #5B9BD5; --jersey2: #8AB4F8; --jersey-tint: #16222E;
   }
 }
 :root[data-theme=dark] {
   --sideline: #0B0C0D; --paper: #16181A; --ink: #EEF1F2; --muted: #98A3AC; --soft: #98A3AC;
   --line: #2C3238; --edge: #6F7A84; --silver: #6B757E; --pounamu: #3FB596; --danger: #FF8A80;
   --pri-bg: #EEF1F2; --pri-ink: #111214; --sel-bg: #EEF1F2; --sel-ink: #111214; --focus: #8AB4F8;
+  --jersey: #5B9BD5; --jersey2: #8AB4F8; --jersey-tint: #16222E;
 }
 /* Sun mode: white page, black type, heavy edges. For bright fields. */
 :root[data-theme=sun] {
   --sideline: #FFFFFF; --paper: #FFFFFF; --ink: #000000; --muted: #1F262C; --soft: #2B333A;
   --line: #59626A; --edge: #000000; --silver: #2B333A; --pounamu: #0F5140; --danger: #7A3D2A;
   --pri-bg: #000000; --pri-ink: #FFFFFF; --sel-bg: #000000; --sel-ink: #FFFFFF; --bw: 3px;
+  --jersey: #000000; --jersey2: #000000; --jersey-tint: #FFFFFF;
 }
+/* Sun mode's header is black-on-black by the overrides above, so the active-tab indicator
+   needs its own colour to stay visible. */
+:root[data-theme=sun] .tabs button[aria-current=page] { box-shadow: inset 0 -3px 0 #fff; }
+:root[data-theme=sun] .tabs::after { background: #fff; }
+:root[data-theme=sun] .pill { background: #fff; color: #000; }
+:root[data-theme=sun] .jersey .sub::before, :root[data-theme=sun] .jersey .sub::after { background: #fff; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
@@ -79,22 +90,24 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 /* Tab bar stays at the top. It clears the Static.app badge at the bottom left. */
 .btn-new { flex: none; min-height: 44px; padding: 0 16px; border: 2px solid rgba(255,255,255,.7); border-radius: 6px; background: transparent; color: #fff; font: 700 20px/1 var(--display); letter-spacing: .03em; }
 .tabs { position: sticky; top: 0; z-index: 5; padding-top: env(safe-area-inset-top); display: grid; grid-template-columns: repeat(4, 1fr); background: var(--jersey); }
-.tabs::after { content: ""; position: absolute; left: 0; bottom: 0; height: 4px; width: var(--p, 0%); background: var(--card-y); transition: width .25s ease; pointer-events: none; }
+.tabs::after { content: ""; position: absolute; left: 0; bottom: 0; height: 4px; width: var(--p, 0%); background: var(--jersey2); transition: width .25s ease; pointer-events: none; }
 .tabs button { min-height: 48px; padding: 4px 0 7px; border: 0; background: transparent; box-shadow: inset 0 -3px 0 transparent; font: 700 20px/1 var(--display); letter-spacing: .02em; color: #B4BCC3; }
-.tabs button[aria-current=page] { color: #fff; box-shadow: inset 0 -3px 0 #fff; }
+.tabs button[aria-current=page] { color: #fff; box-shadow: inset 0 -3px 0 var(--jersey2); }
 .tabs button { position: relative; white-space: nowrap; }
-.pill { position: absolute; top: 3px; right: 6px; min-width: 18px; padding: 1px 5px; border-radius: 10px; background: var(--card-y); color: #111214; font: 800 14px/1.15 var(--display); text-align: center; }
+.pill { position: absolute; top: 3px; right: 6px; min-width: 18px; padding: 1px 5px; border-radius: 10px; background: var(--jersey2); color: #FFFFFF; font: 800 14px/1.15 var(--display); text-align: center; }
 #count { font-weight: 600; opacity: .9; }
 .tabs button[data-tab=saved] { padding-right: 14px; }
 
 /* Jersey back (first visit) and compact band (every visit after) */
 .jersey { background: var(--jersey); color: #fff; text-align: center; padding: 2px 16px 26px; overflow: hidden; }
+.jersey .crest { display: block; width: 72px; height: auto; margin: 14px auto 0; border-radius: 4px; }
 .jersey svg { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 auto; }
 .jersey .arc { fill: #fff; font: 800 29px var(--display); letter-spacing: .19em; text-transform: uppercase; }
 .jersey .number { margin: -18px 0 0; font: 800 176px/.8 var(--display); letter-spacing: -.01em; }
 .jersey .sub { margin: 14px 0 0; font-size: 15px; color: #C5CBD0; letter-spacing: .04em; }
-.jersey .sub::before, .jersey .sub::after { content: ""; display: inline-block; width: 28px; height: 3px; margin: 0 10px 4px; background: var(--card-y); }
+.jersey .sub::before, .jersey .sub::after { content: ""; display: inline-block; width: 28px; height: 3px; margin: 0 10px 4px; background: var(--jersey2); }
 .band { display: flex; align-items: center; gap: 12px; padding: 6px 16px 12px; background: var(--jersey); color: #fff; }
+.band .crest { flex: none; width: 40px; height: 40px; object-fit: contain; border-radius: 4px; }
 .band .num { flex: none; font: 800 66px/.8 var(--display); }
 .band .txt { flex: 1; min-width: 0; }
 .band .ttl { margin: 0; font: 800 26px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
@@ -145,12 +158,13 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink); }
 .cards i + i { background: var(--card-r); transform: rotate(7deg); }
 .whistle { width: 40px; height: 28px; margin-left: 12px; color: var(--ink); }
 .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 14px 0 6px; }
-.scale button { min-height: 58px; border-radius: 6px; border: var(--bw) solid var(--edge); background: var(--paper); font: 800 32px/1 var(--display); }
-.scale button[aria-pressed=true] { background: var(--sel-bg); color: var(--sel-ink); border-color: var(--sel-bg); box-shadow: inset 0 -5px 0 var(--card-y); }
+.scale button { min-height: 58px; border-radius: 6px; border: var(--bw) solid var(--jersey); background: var(--paper); color: var(--ink); font: 800 32px/1 var(--display); }
+.scale button[aria-pressed=true] { background: var(--sel-bg); color: var(--sel-ink); border-color: var(--sel-bg); }
 .anchor { margin: 0 0 8px; font-size: 15px; font-weight: 600; color: var(--ink); }
 .qt { display: flex; gap: 8px; margin: 8px -16px 10px; padding: 0 16px 2px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .qt::-webkit-scrollbar { display: none; }
-.qt button { flex: none; min-height: 44px; padding: 0 14px; border: var(--bw) solid var(--edge); border-radius: 22px; background: var(--paper); font: 600 15px var(--body); white-space: nowrap; }
+.qt button { flex: none; min-height: 44px; padding: 0 14px; border: var(--bw) solid var(--jersey); border-radius: 6px; background: var(--paper); color: var(--jersey); font: 600 15px var(--body); white-space: nowrap; }
+.qt button[aria-pressed=true] { background: var(--jersey); color: #FFFFFF; }
 textarea { min-height: 66px; resize: vertical; line-height: 1.35; }
 .vnwrap { position: relative; }
 .vnwrap textarea { padding-right: 112px; resize: none; }
@@ -172,10 +186,11 @@ body[data-dict=off] .dcbtn { display: none; }
 .vnbar .recl i { width: 12px; height: 12px; border-radius: 50%; background: var(--card-r); }
 .vnbar .btn.small { min-height: 44px; padding: 0 12px; font-size: 18px; }
 .row.notes .vnbar, .row.priv .vnbar { margin-top: 6px; }
-.row.rating { background: var(--paper); margin-top: 4px; border-top: 4px solid var(--ink); }
+.row.rating { background: var(--jersey-tint); margin-top: 4px; border-top: 4px solid var(--jersey); }
 .row.rating::before { display: none; }
-.row.rating h2 { font-size: 34px; }
+.row.rating h2 { font-size: 34px; color: var(--jersey); }
 .row.rating .scale button { min-height: 68px; font-size: 38px; }
+.row.rating .whistle { color: var(--jersey); }
 .row.notes { background: var(--paper); border-top: 4px solid var(--ink); display: grid; gap: 14px; }
 .row.notes::before, .row.priv::before { display: none; }
 .row.notes h2, .row.priv h2 { margin: 0; font: 800 26px/1.05 var(--display); }
@@ -185,7 +200,7 @@ body[data-dict=off] .dcbtn { display: none; }
 .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 18px 16px; }
 .btn { min-height: 52px; padding: 0 14px; border-radius: 6px; border: var(--bw) solid var(--edge); background: var(--paper); font: 700 22px/1 var(--display); letter-spacing: .02em; }
 .btn.primary { background: var(--pri-bg); color: var(--pri-ink); border-color: var(--pri-bg); }
-.btn.danger { color: var(--danger); border-color: var(--danger); background: transparent; }
+.btn.danger { color: var(--danger); border-color: var(--danger); background: transparent; margin-top: 10px; }
 .btn:disabled { opacity: .6; cursor: default; }
 .btn.small { min-height: 44px; font-size: 19px; }
 .up-status { grid-column: 1 / -1; margin: -2px 0 4px; font-size: 15px; text-align: center; color: var(--muted); }
@@ -255,15 +270,15 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
 .rv .nm { position: sticky; left: 0; z-index: 1; text-align: left; min-width: 176px; padding-left: 8px; background: var(--paper); box-shadow: 2px 0 0 var(--ink); font-weight: 400; }
 .rv thead .nm { background: var(--jersey); }
 .rv thead button { min-height: 48px; padding: 0 2px; border: 0; background: none; color: #fff; font: 700 17px/1 var(--display); letter-spacing: .02em; }
-.rv th[aria-sort=ascending] button::after { content: " \25B2"; font-size: 10px; color: var(--card-y); }
-.rv th[aria-sort=descending] button::after { content: " \25BC"; font-size: 10px; color: var(--card-y); }
+.rv th[aria-sort=ascending] button::after { content: " \25B2"; font-size: 10px; }
+.rv th[aria-sort=descending] button::after { content: " \25BC"; font-size: 10px; }
 .rk { display: inline-grid; place-items: center; min-width: 32px; height: 32px; margin-right: 10px; border-radius: 6px; background: var(--sel-bg); color: var(--sel-ink); font: 800 21px/1 var(--display); }
 .rk.none { background: transparent; border: 2px solid var(--edge); color: var(--muted); }
 .rv .who { min-height: 46px; padding: 0; border: 0; background: none; font: 700 19px var(--body); text-align: left; text-decoration: underline; text-decoration-color: var(--silver); text-underline-offset: 4px; }
 .pv { margin-left: 8px; font-size: 13px; color: var(--muted); }
 .rv tr.prov td, .rv tr.prov th.nm { color: var(--muted); }
-.rv .sc { font: 700 20px var(--display); font-variant-numeric: tabular-nums; background: color-mix(in srgb, var(--pounamu) var(--t, 0%), transparent); }
-.rv .sc.main { font-weight: 800; font-size: 22px; }
+.rv .sc { font: 700 20px var(--display); font-variant-numeric: tabular-nums; }
+.rv .sc.main { font-weight: 800; font-size: 22px; color: var(--jersey); }
 
 /* Below 640px the scoreboard becomes a stack of cards. Sort moves from tappable headers to this control. */
 @media (max-width: 640px) {
@@ -326,6 +341,7 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
   <div id="view-form">
     <h1 class="sr">Coaching Sevens form</h1>
     <section class="jersey" id="hero" hidden>
+      <img class="crest" src="icons/arra-crest.png" alt="Auckland Rugby Referees" width="237" height="240" loading="eager">
       <svg viewBox="0 0 420 92" aria-hidden="true" focusable="false">
         <defs><path id="arc" d="M 26 82 Q 210 14 394 82"/></defs>
         <text class="arc" text-anchor="middle"><textPath href="#arc" startOffset="50%">Coaching Sevens</textPath></text>
@@ -334,6 +350,7 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
       <p class="sub">Referee coaching form</p>
     </section>
     <section class="band" id="band">
+      <img class="crest" src="icons/arra-crest.png" alt="Auckland Rugby Referees" width="237" height="240" loading="eager">
       <span class="num" aria-hidden="true">7</span>
       <div class="txt"><p class="ttl">Coaching Sevens</p><p id="status" aria-live="polite">0 of 8 scored</p></div>
       <button type="button" class="btn-new" data-act="new" aria-label="Start a new form">New</button>
@@ -544,7 +561,7 @@ table.rv { border-collapse: separate; border-spacing: 0; width: 100%; min-width:
         <label class="f">Or paste a setup link or code
           <input type="text" id="cfg-paste" autocomplete="off" autocapitalize="off" placeholder="Paste here">
         </label>
-        <button type="button" class="btn" data-act="cfgpaste">Use this setup</button>
+        <button type="button" class="btn primary" data-act="cfgpaste">Use this setup</button>
         <button type="button" class="btn danger" data-act="cfgclear">Clear the setup on this device</button>
       </div>
     </div>
@@ -789,7 +806,7 @@ $('#sections').innerHTML = SECTIONS.map(s => {
       ${[1, 2, 3, 4, 5].map(n => `<button type="button" data-k="${s.key}" data-v="${n}" aria-pressed="false" aria-label="${s.title}: ${n}">${n}</button>`).join('')}
     </div>
     <p class="anchor" data-anchor="${s.key}" hidden></p>
-    ${s.tags.length ? `<div class="qt" role="group" aria-label="Quick notes: ${s.title}">${s.tags.map((t, i) => `<button type="button" data-tag="${s.key}" data-i="${i}">${esc(t)}</button>`).join('')}</div>` : ''}
+    ${s.tags.length ? `<div class="qt" role="group" aria-label="Quick notes: ${s.title}">${s.tags.map((t, i) => `<button type="button" data-tag="${s.key}" data-i="${i}" aria-pressed="false">${esc(t)}</button>`).join('')}</div>` : ''}
     <textarea data-c="${s.key}" rows="2" placeholder="Comments" aria-label="Comments: ${s.title}"></textarea>
   </section>`;
 }).join('');
@@ -818,6 +835,13 @@ function refreshScores() {
     p.textContent = v ? `${v}. ${ANCHORS[v]}` : '';
   });
 }
+function refreshTags() {
+  $$('.qt button[data-tag]').forEach(b => {
+    const s = SECTIONS.find(x => x.key === b.dataset.tag);
+    const text = s.tags[Number(b.dataset.i)];
+    b.setAttribute('aria-pressed', String((cur.comments[s.key] || '').includes(text)));
+  });
+}
 function moreSummary() {
   const bits = [cur.union.trim(), cur.tournament.trim(), cur.level.trim(), cur.game.trim(), fmtDate(cur.date, false)].filter(Boolean);
   $('#more-sum').textContent = bits.join(', ');
@@ -826,6 +850,7 @@ function fillForm() {
   $$('[data-f]').forEach(el => { el.value = cur[el.dataset.f] || (el.dataset.f === 'role' ? 'Referee' : ''); });
   $$('[data-c]').forEach(el => { el.value = cur.comments[el.dataset.c] || ''; });
   refreshScores();
+  refreshTags();
   $('#ref-hint').hidden = true;
   moreSummary();
   autosizeAll();
@@ -908,6 +933,7 @@ $('#view-form').addEventListener('input', (e) => {
   } else if (t.dataset.c) {
     cur.comments[t.dataset.c] = t.value;
     autosize(t);
+    refreshTags();
   } else return;
   queueSave();
 });
@@ -937,6 +963,7 @@ $('#view-form').addEventListener('click', (e) => {
     const ta = $(`[data-c="${s.key}"]`);
     ta.value = cur.comments[s.key];
     autosize(ta);
+    refreshTags();
     queueSave();
   } else if (b.dataset.dc) {
     if (dict && dict.slot === b.dataset.dc) stopDict(); else startDict(b.dataset.dc);
@@ -1617,10 +1644,7 @@ function renderReview() {
     const asort = (k) => rvSort.key === k ? (rvSort.dir === 'asc' ? 'ascending' : 'descending') : 'none';
     const head = `<tr><th class="nm" scope="col" aria-sort="${asort('name')}"><button type="button" data-sort="name">Referee</button></th>` +
       cols.map(c => `<th scope="col" aria-sort="${asort(c.key)}"><button type="button" data-sort="${c.key}">${c.label}</button></th>`).join('') + '</tr>';
-    const cell = (v, main, label) => {
-      const t = v == null ? '' : ` style="--t:${Math.round((v - 1) / 4 * 45)}%"`;
-      return `<td class="sc${main ? ' main' : ''}" data-label="${esc(label)}"${t}>${one(v)}</td>`;
-    };
+    const cell = (v, main, label) => `<td class="sc${main ? ' main' : ''}" data-label="${esc(label)}">${one(v)}</td>`;
     const body = sortRows(rows).map(g => {
       const cells = [cell(g.avg.rating, !F.adj, 'Rating'), ...(F.adj ? [cell(g.adj, true, 'Adjusted')] : []), ...AREAS.map(s => cell(g.avg[s.key], false, s.short))].join('');
       return `<tr class="${g.prov ? 'prov' : ''}"><th class="nm" scope="row"><span class="rk${g.rank ? '' : ' none'}">${g.rank || 'P'}</span><button type="button" class="who" data-ref="${esc(g.key)}">${esc(g.name)}</button>${g.prov ? '<span class="pv">provisional</span>' : ''}</th><td data-label="Games">${g.games.length}</td><td data-label="Coaches">${g.coaches.size}</td>${cells}</tr>`;

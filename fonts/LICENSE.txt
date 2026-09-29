@@ -1,4 +1,9 @@
-Barlow and Barlow Condensed
-Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow)
+Oswald
+Copyright 2016 The Oswald Project Authors (https://github.com/googlefonts/OswaldFont)
 Licensed under the SIL Open Font License, Version 1.1.
+
+Source Sans 3
+Copyright 2010-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
+Licensed under the SIL Open Font License, Version 1.1.
+
 Full text: https://openfontlicense.org
