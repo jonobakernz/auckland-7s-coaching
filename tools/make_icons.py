@@ -1,19 +1,19 @@
-"""Draw the app icons (white 7, dashed 5 m line, yellow card on jersey black).
+"""Draw the app icons (white 7, dashed 5 m line, yellow card on jersey navy).
 
-Needs Pillow and a TTF of Barlow Condensed ExtraBold.
+Needs Pillow and a TTF of Oswald Bold.
 Make the TTF from the bundled woff2 with fontTools and brotli:
     pip install pillow fonttools brotli
-    python -c "from fontTools.ttLib import TTFont; f=TTFont('fonts/barlow-condensed-latin-800.woff2'); f.flavor=None; f.save('BarlowCondensed-800.ttf')"
-Run from the repo root:  python tools/make_icons.py BarlowCondensed-800.ttf
+    python -c "from fontTools.ttLib import TTFont; f=TTFont('fonts/oswald-latin-600-700.woff2'); f.flavor=None; f.save('Oswald-700.ttf')"
+Run from the repo root:  python tools/make_icons.py Oswald-700.ttf
 """
 import sys
 from PIL import Image, ImageDraw, ImageFont
 
-FONT = sys.argv[1] if len(sys.argv) > 1 else 'BarlowCondensed-800.ttf'
+FONT = sys.argv[1] if len(sys.argv) > 1 else 'Oswald-700.ttf'
 
 def make(size, path):
     S = size * 4
-    img = Image.new('RGB', (S, S), '#0E234B')
+    img = Image.new('RGB', (S, S), '#063872')
     d = ImageDraw.Draw(img)
     f = ImageFont.truetype(FONT, int(S * 0.62))
     d.text((S * 0.47, S * 0.46), '7', font=f, fill='#FFFFFF', anchor='mm')
@@ -22,7 +22,7 @@ def make(size, path):
         d.rectangle([x, y, x + dash, y + S * 0.011], fill='#9EA7AF')
         x += dash + gap
     card = Image.new('RGBA', (int(S * 0.10), int(S * 0.15)), (0, 0, 0, 0))
-    ImageDraw.Draw(card).rounded_rectangle([0, 0, card.width - 1, card.height - 1], radius=int(S * 0.012), fill='#F5C400')
+    ImageDraw.Draw(card).rounded_rectangle([0, 0, card.width - 1, card.height - 1], radius=int(S * 0.012), fill='#F8BF2E')
     card = card.rotate(12, expand=True, resample=Image.BICUBIC)
     img.paste(card, (int(S * 0.60), int(S * 0.20)), card)
     img.resize((size, size), Image.LANCZOS).save(path)

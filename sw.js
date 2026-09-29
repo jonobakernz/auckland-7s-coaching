@@ -8,14 +8,10 @@ const ASSETS = [
   'icons/icon-512.png',
   'icons/icon-maskable-512.png',
   'icons/apple-touch-icon.png',
-  'fonts/barlow-latin-400.woff2',
-  'fonts/barlow-latin-ext-400.woff2',
-  'fonts/barlow-latin-600.woff2',
-  'fonts/barlow-latin-ext-600.woff2',
-  'fonts/barlow-condensed-latin-700.woff2',
-  'fonts/barlow-condensed-latin-ext-700.woff2',
-  'fonts/barlow-condensed-latin-800.woff2',
-  'fonts/barlow-condensed-latin-ext-800.woff2'
+  'fonts/oswald-latin-600-700.woff2',
+  'fonts/oswald-latin-ext-600-700.woff2',
+  'fonts/source-sans-3-latin-400-600.woff2',
+  'fonts/source-sans-3-latin-ext-400-600.woff2'
 ];
 
 self.addEventListener('install', (e) => {
