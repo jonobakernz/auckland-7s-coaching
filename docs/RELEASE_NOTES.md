@@ -1,6 +1,6 @@
 # Auckland 7s Coaching: release notes
 
-Updated 29 Sept 2026. Current release: 38.
+Updated 1 Oct 2026. Current release: 39.
 
 **This file was inherited from `sevens-coaching-form`, the project this repo (`auckland-7s-coaching`) was copied
 from.** Releases 1 to 29 document that project's own history -- including its domain (`coach7srefs.nz`), its
@@ -40,6 +40,8 @@ A coach can score a game in about 15 taps. Notes can be typed, spoken, or record
 
 **Scoring**
 
+- Decision-making accuracy has a new tally under its quick notes. For Tackle, Breakdown, Offside and Foul Play, tap C (Correct), W (Wrong), M (Missed) or PO (Play on) for each call. The percentage for each area updates by itself, and a Total accuracy box combines all four. Accuracy is Correct out of Correct, Wrong and Missed, so one correct tackle reads 100%. Play on is counted but is not part of the percentage. If you tap by mistake, switch on "Fix a mistake" and tap the same button to take one off. The 1 to 5 score is still there, and the tally sits beside it.
+- The tally is in the shared summary, the email, the print, the spreadsheet (CSV) and the upload. It is not private. Forms saved before this release open as normal with an empty tally.
 - Score eight areas from 1 to 5: fitness, foul play, breakdowns, set phase, game awareness, game management, communication, and an overall rating.
 - Communication is a new area. "Good position" is a new choice under distance from contest.
 - Each score shows a one-line meaning, such as "3. Meets the standard for this level." Open "How to score" to see all five.
@@ -122,10 +124,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 38 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 39 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 1 Oct 2026 | 39. Decision tally | Tap C, W, M or PO in four decision areas and the accuracy percentages work themselves out. 22 new upload fields are added after the existing ones: `tally_<area>_<c/w/m/po>`, `accuracy_<area>` and `accuracy_total` (areas: tackle, breakdown, offside, foulplay). Existing fields are unchanged and the Worker needs no change. | Decision-making accuracy shows a grid of C, W, M and PO buttons and a Total accuracy box. |
 | 29 Sept 2026 | 38. Regenerated the demo overview picture; restyled the how-to guide | `docs/demo-overview.png` (removed in release 37 for being wrong) is back, regenerated from the current app: navy/Oswald theme, the real ARRA crest, 3-area scoring, no distance-from-contest, and the live GitHub Pages QR link instead of a retired address. `help.html` (the how-to guide) had its own hand-rolled colour scheme -- black header, gold accent, generic system fonts -- left over from the original project and never updated in the ARRA redesign. It now uses the same navy/blue palette, the same self-hosted Oswald/Source Sans 3 fonts, and the real crest in its header, so it reads as part of the same product as the app and `index.html`. No fields, scoring or data changed. | The README's demo picture shows the current navy app. `help.html` has a navy header with the ARRA crest instead of a black header with a plain "7". |
 | 29 Sept 2026 | 37. Renamed the app to Auckland 7s Coaching | The app's actual name -- not just its colours -- now matches this project rather than the original `sevens-coaching-form` it was copied from. The browser tab title, the PWA install name (`manifest.webmanifest`), the screen-reader heading, the splash/header text, and the print/email/share titles all changed from "Sevens Coaching Form" / "Coaching Sevens" to "Auckland 7s Coaching" / "Auckland 7s". `help.html`'s title also changed from a leftover "Coach7sRefs" (the original project's retired domain name) to match. Storage keys (`sevens.forms.v1` and so on) were deliberately left alone, since renaming them would orphan every form already saved on a coach's phone. Also fixed: a stale README that still called the repo private (it has been public since release 31) and referenced a demo-overview screenshot showing the old black/gold theme, the old 7-area scoring and the retired static.app address -- removed rather than left to mislead; and a table-formatting bug in this file's release 35/36 rows. No fields, scoring or data changed. | The browser tab, the PWA install name, and the Form tab's header all say "Auckland 7s" / "Auckland 7s Coaching" instead of "Sevens Coaching Form" / "Coaching Sevens". |
 | 29 Sept 2026 | 36. Match context, Review cards and Setup hierarchy | Follow-up to release 35's colour/type pass, covering the redesign brief's layout-level items. The compact header ("7" plus title) is now sticky, so it stays visible while scrolling through the scoring rows, and its title switches from "Auckland 7s" to the referee's name once one is entered; the status line beneath it now leads with field and time ("Field 3, 2:40pm — 3 of 4 scored") instead of just the scoring count. The Review table's referee-name row is now a light-blue card header with the name in the display typeface, so each referee's card reads as a clear unit instead of a plain list row. Setup's sections ("This device", "Display", "Voice", "Feedback for the organiser", "Bugs and ideas") now have a divider line between them for clearer separation. Saved cards were reviewed against the same brief and left as they were -- they already show referee, context and rating exactly as recommended. No fields, scoring or data changed. | While scoring, the navy header at the top now shows the referee's name and field/time instead of scrolling out of view. Each Review card has a pale blue name bar at the top. Setup has visible divider lines between its main sections. |
