@@ -1,6 +1,6 @@
 # Auckland 7s Coaching: release notes
 
-Updated 1 Oct 2026. Current release: 39.
+Updated 1 Oct 2026. Current release: 40.
 
 **This file was inherited from `sevens-coaching-form`, the project this repo (`auckland-7s-coaching`) was copied
 from.** Releases 1 to 29 document that project's own history -- including its domain (`coach7srefs.nz`), its
@@ -124,10 +124,11 @@ An organiser can set up a tournament with one scan and rank every referee across
 
 ## Release history
 
-There have been 39 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
+There have been 40 releases, newest first. Dates are New Zealand time. The last column helps support tell which release a phone has.
 
 | Date | Release | What changed | How to spot it on a phone |
 | --- | --- | --- | --- |
+| 1 Oct 2026 | 40. Help guide: decision tally | The how-to guide (`help.html`) has a new section, "Counting decisions — the tally", under "Scoring a game". | Open the guide and find "Counting decisions" after the area table. |
 | 1 Oct 2026 | 39. Decision tally | Tap C, W, M or PO in four decision areas and the accuracy percentages work themselves out. 22 new upload fields are added after the existing ones: `tally_<area>_<c/w/m/po>`, `accuracy_<area>` and `accuracy_total` (areas: tackle, breakdown, offside, foulplay). Existing fields are unchanged and the Worker needs no change. | Decision-making accuracy shows a grid of C, W, M and PO buttons and a Total accuracy box. |
 | 29 Sept 2026 | 38. Regenerated the demo overview picture; restyled the how-to guide | `docs/demo-overview.png` (removed in release 37 for being wrong) is back, regenerated from the current app: navy/Oswald theme, the real ARRA crest, 3-area scoring, no distance-from-contest, and the live GitHub Pages QR link instead of a retired address. `help.html` (the how-to guide) had its own hand-rolled colour scheme -- black header, gold accent, generic system fonts -- left over from the original project and never updated in the ARRA redesign. It now uses the same navy/blue palette, the same self-hosted Oswald/Source Sans 3 fonts, and the real crest in its header, so it reads as part of the same product as the app and `index.html`. No fields, scoring or data changed. | The README's demo picture shows the current navy app. `help.html` has a navy header with the ARRA crest instead of a black header with a plain "7". |
 | 29 Sept 2026 | 37. Renamed the app to Auckland 7s Coaching | The app's actual name -- not just its colours -- now matches this project rather than the original `sevens-coaching-form` it was copied from. The browser tab title, the PWA install name (`manifest.webmanifest`), the screen-reader heading, the splash/header text, and the print/email/share titles all changed from "Sevens Coaching Form" / "Coaching Sevens" to "Auckland 7s Coaching" / "Auckland 7s". `help.html`'s title also changed from a leftover "Coach7sRefs" (the original project's retired domain name) to match. Storage keys (`sevens.forms.v1` and so on) were deliberately left alone, since renaming them would orphan every form already saved on a coach's phone. Also fixed: a stale README that still called the repo private (it has been public since release 31) and referenced a demo-overview screenshot showing the old black/gold theme, the old 7-area scoring and the retired static.app address -- removed rather than left to mislead; and a table-formatting bug in this file's release 35/36 rows. No fields, scoring or data changed. | The browser tab, the PWA install name, and the Form tab's header all say "Auckland 7s" / "Auckland 7s Coaching" instead of "Sevens Coaching Form" / "Coaching Sevens". |
