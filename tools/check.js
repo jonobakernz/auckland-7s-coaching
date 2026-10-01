@@ -79,7 +79,9 @@ try {
   const sec = html.match(/const SECTIONS = \[([\s\S]*?)\n\];/)[1];
   const SECTIONS = new Function('return [' + sec + '\n]')();
   const up = html.match(/const UP_FIELDS = (\[[\s\S]*?\]);/)[1];
-  const fields = new Function('SECTIONS', 'return ' + up)(SECTIONS);
+  const TALLY_AREAS = new Function('return ' + html.match(/const TALLY_AREAS = (\[[\s\S]*?\]\]);/)[1])();
+  const TALLY_OUT = new Function('return ' + html.match(/const TALLY_OUT = (\[[\s\S]*?\]\]);/)[1])();
+  const fields = new Function('SECTIONS', 'TALLY_AREAS', 'TALLY_OUT', 'return ' + up)(SECTIONS, TALLY_AREAS, TALLY_OUT);
   const snap = path.join(root, 'tools', 'upload-fields.json');
   if (process.argv.includes('--update-fields')) {
     fs.writeFileSync(snap, JSON.stringify({ note: 'The upload fields. Whichever backend receives them, an export or a saved CSV expects these exact names. Change it only on purpose.', fields }, null, 2) + '\n');

@@ -24,6 +24,27 @@
     "comment_rating",
     "keep",
     "work",
-    "private_notes"
+    "private_notes",
+    "tally_tackle_c",
+    "tally_tackle_w",
+    "tally_tackle_m",
+    "tally_tackle_po",
+    "accuracy_tackle",
+    "tally_breakdown_c",
+    "tally_breakdown_w",
+    "tally_breakdown_m",
+    "tally_breakdown_po",
+    "accuracy_breakdown",
+    "tally_offside_c",
+    "tally_offside_w",
+    "tally_offside_m",
+    "tally_offside_po",
+    "accuracy_offside",
+    "tally_foulplay_c",
+    "tally_foulplay_w",
+    "tally_foulplay_m",
+    "tally_foulplay_po",
+    "accuracy_foulplay",
+    "accuracy_total"
   ]
 }
